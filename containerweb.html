@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>コンテナWeb 業務システム ｜ CloudFront + ALB + ECS Fargate + Aurora</title>
+<meta name="description" content="CloudFront + ALB + ECS Fargate + Aurora Serverless v2 のリファレンスアーキテクチャ。高可用・無停止更新・読み書き分離・IaC(CDK)で、常時稼働の業務Webシステムを構築します。" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: {
+  colors:{ navy:'#0E2238', navy2:'#16314e', deep:'#0B5A82', teal:'#1390A6', tealx:'#16b5cf', gold:'#E0A43B', ink:'#1B2733', mute:'#5E6B7A', mist:'#F4F7FB' },
+  fontFamily:{ jp:['"Noto Sans JP"','sans-serif'] }
+}}}
+</script>
+<style>
+  html{scroll-behavior:smooth} body{font-family:'Noto Sans JP',sans-serif}
+  .hero-grad{background:radial-gradient(1100px 600px at 80% -10%,rgba(19,144,166,.45),transparent),radial-gradient(900px 500px at 0% 110%,rgba(11,90,130,.5),transparent),linear-gradient(135deg,#0E2238 0%,#10324c 60%,#0b3a52 100%)}
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+  .reveal.in{opacity:1;transform:none}
+  .card-h{transition:transform .25s ease,box-shadow .25s ease}
+  .card-h:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(14,34,56,.16)}
+  ::selection{background:#1390A6;color:#fff}
+</style>
+</head>
+<body class="text-ink bg-white antialiased">
+
+<!-- NAV -->
+<header id="nav" class="fixed top-0 inset-x-0 z-50 transition-all duration-300">
+  <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
+    <a href="index.html" class="flex items-center gap-2 font-bold text-white">
+      <span class="inline-flex w-9 h-9 rounded-xl bg-teal items-center justify-center text-white"><i class="fa-solid fa-cubes"></i></span>
+      <span class="leading-tight">コンテナWeb<span class="block text-[10px] font-medium tracking-widest opacity-70">業務システム</span></span>
+    </a>
+    <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-white/85">
+      <a href="#arch" class="hover:text-white">構成</a>
+      <a href="#components" class="hover:text-white">部品</a>
+      <a href="#nfr" class="hover:text-white">非機能</a>
+      <a href="#docs" class="hover:text-white">資料</a>
+      <a href="index.html" class="ml-1 px-4 py-2 rounded-full border border-white/30 text-white hover:bg-white/10"><i class="fa-solid fa-arrow-left mr-1"></i>ケイパビリティTOP</a>
+    </nav>
+    <a href="index.html" class="md:hidden text-white text-sm"><i class="fa-solid fa-arrow-left mr-1"></i>TOP</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero-grad text-white pt-28 pb-20 md:pt-36 md:pb-28">
+  <div class="max-w-6xl mx-auto px-5">
+    <p class="text-gold font-bold tracking-widest text-sm mb-4">CASE STUDY ／ コンテナ アーキテクチャ</p>
+    <h1 class="text-3xl md:text-5xl font-black leading-tight mb-5">コンテナWeb 業務システム</h1>
+    <p class="text-white/85 text-lg md:text-xl mb-7">常時稼働の業務システムを、<strong class="text-tealx">高可用・無停止更新</strong>で構築。CloudFront + ALB + ECS Fargate + Aurora Serverless v2 のリファレンスアーキテクチャに基づき、設計から構築・運用まで対応します。</p>
+    <div class="flex flex-wrap gap-3 mb-9">
+      <a href="#docs" class="px-6 py-3 rounded-full bg-gold text-navy font-bold hover:brightness-105 shadow-lg shadow-gold/20"><i class="fa-solid fa-file-arrow-down mr-2"></i>資料をダウンロード</a>
+      <a href="#arch" class="px-6 py-3 rounded-full border border-white/30 text-white font-bold hover:bg-white/10">アーキテクチャを見る</a>
+    </div>
+    <div class="flex flex-wrap gap-3">
+      <span class="px-4 py-2 rounded-full bg-white/10 border border-white/15 text-sm"><i class="fa-solid fa-cubes text-tealx mr-2"></i>ECS Fargate</span>
+      <span class="px-4 py-2 rounded-full bg-white/10 border border-white/15 text-sm"><i class="fa-solid fa-arrows-turn-to-dots text-tealx mr-2"></i>読み書き分離</span>
+      <span class="px-4 py-2 rounded-full bg-white/10 border border-white/15 text-sm"><i class="fa-solid fa-rotate text-tealx mr-2"></i>無停止更新</span>
+    </div>
+  </div>
+</section>
+
+<!-- 価値 -->
+<section class="py-16 md:py-20 bg-white">
+  <div class="max-w-6xl mx-auto px-5">
+    <div class="reveal mb-10"><p class="text-teal font-bold tracking-widest text-sm mb-2">OUR VALUE</p><h2 class="text-2xl md:text-3xl font-black">提供できる価値</h2>
+      <p class="text-mute mt-3 max-w-2xl">クラウドネイティブな Web システムを、要件定義・設計から構築・運用改善まで一気通貫でご提供します。</p></div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div class="reveal card-h bg-mist rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-deep text-white flex items-center justify-center mb-4"><i class="fa-solid fa-cloud"></i></div><div class="font-bold text-lg mb-1.5">クラウド設計力</div><p class="text-sm text-mute leading-relaxed">AWSベストプラクティスに沿った拡張性・可用性の高い設計。</p></div>
+      <div class="reveal card-h bg-mist rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-teal text-white flex items-center justify-center mb-4"><i class="fa-solid fa-cubes"></i></div><div class="font-bold text-lg mb-1.5">コンテナ構築力</div><p class="text-sm text-mute leading-relaxed">ECS Fargate でサーバー管理不要のスケーラブルな実行基盤。</p></div>
+      <div class="reveal card-h bg-mist rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-deep text-white flex items-center justify-center mb-4"><i class="fa-solid fa-code"></i></div><div class="font-bold text-lg mb-1.5">IaC 自動化</div><p class="text-sm text-mute leading-relaxed">AWS CDK（TypeScript）で再現性と変更管理を実現。</p></div>
+      <div class="reveal card-h bg-mist rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-teal text-white flex items-center justify-center mb-4"><i class="fa-solid fa-shield-halved"></i></div><div class="font-bold text-lg mb-1.5">堅牢 &amp; 低コスト</div><p class="text-sm text-mute leading-relaxed">最小権限・Serverless v2 でセキュアかつ無駄のないコスト構造。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- アーキテクチャ -->
+<section id="arch" class="py-16 md:py-24 bg-navy text-white">
+  <div class="max-w-6xl mx-auto px-5">
+    <div class="reveal mb-10"><p class="text-gold font-bold tracking-widest text-sm mb-2">REFERENCE ARCHITECTURE</p><h2 class="text-2xl md:text-4xl font-black">リファレンスアーキテクチャ</h2>
+      <p class="text-white/70 mt-3">Amazon VPC（マルチAZ）／3層サブネット分離（公開・非公開・分離）。</p></div>
+    <div class="reveal flex flex-col lg:flex-row items-stretch gap-3 mb-5">
+      <div class="flex-1 rounded-xl bg-navy2 border border-white/10 p-4 text-center"><i class="fa-solid fa-user text-tealx text-xl mb-1"></i><div class="font-bold text-sm">ユーザー</div><div class="text-[11px] text-white/60">ブラウザ / App</div></div>
+      <div class="flex items-center justify-center text-tealx"><i class="fa-solid fa-arrow-right rotate-90 lg:rotate-0"></i></div>
+      <div class="flex-1 rounded-xl bg-navy2 border border-white/10 p-4 text-center"><i class="fa-solid fa-globe text-tealx text-xl mb-1"></i><div class="font-bold text-sm">CloudFront</div><div class="text-[11px] text-white/60">CDN / HTTPS / 防御</div></div>
+      <div class="flex items-center justify-center text-tealx"><i class="fa-solid fa-arrow-right rotate-90 lg:rotate-0"></i></div>
+      <div class="flex-1 rounded-xl bg-navy2 border border-white/10 p-4 text-center"><i class="fa-solid fa-scale-balanced text-tealx text-xl mb-1"></i><div class="font-bold text-sm">ALB</div><div class="text-[11px] text-white/60">ロードバランサ</div></div>
+      <div class="flex items-center justify-center text-tealx"><i class="fa-solid fa-arrow-right rotate-90 lg:rotate-0"></i></div>
+      <div class="flex-1 rounded-xl bg-teal border border-white/10 p-4 text-center"><i class="fa-solid fa-cubes text-white text-xl mb-1"></i><div class="font-bold text-sm">ECS Fargate</div><div class="text-[11px] text-white/80">アプリ(FastAPI)</div></div>
+    </div>
+    <div class="reveal flex flex-col sm:flex-row gap-3 sm:justify-end sm:items-center mb-6">
+      <div class="text-white/50 text-sm sm:mr-2 flex items-center justify-center"><i class="fa-solid fa-arrow-right-long rotate-90 sm:-rotate-45"></i></div>
+      <div class="rounded-xl bg-navy2 border border-gold/40 p-4 text-center sm:w-64"><i class="fa-solid fa-database text-gold text-xl mb-1"></i><div class="font-bold text-sm">Aurora Serverless v2</div><div class="text-[11px] text-white/70">writer（書込） / reader（読取）</div></div>
+    </div>
+    <div class="reveal text-sm text-white/70 leading-relaxed bg-white/5 rounded-xl p-4 border border-white/10">
+      <span class="text-gold font-bold">設計のポイント：</span>通信は常に HTTPS の CloudFront 経由。ALB は公開しつつ <b class="text-white">CloudFront からのみ受信を許可</b>（公網から ALB に直結不可）。DB は出口のない分離サブネットに配置し、<b class="text-white">読み書きを分離</b>して負荷を分散。Aurora は min=0 でアイドル時に自動停止。
+    </div>
+  </div>
+</section>
+
+<!-- コンポーネント -->
+<section id="components" class="py-16 md:py-24 bg-mist">
+  <div class="max-w-6xl mx-auto px-5">
+    <div class="reveal mb-10"><p class="text-teal font-bold tracking-widest text-sm mb-2">COMPONENTS</p><h2 class="text-2xl md:text-4xl font-black">各コンポーネントの役割</h2></div>
+    <div class="reveal overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+      <table class="w-full text-sm">
+        <thead><tr class="bg-navy text-white text-left"><th class="p-4 font-bold">コンポーネント</th><th class="p-4 font-bold">役割</th><th class="p-4 font-bold">採用理由（お客様メリット）</th></tr></thead>
+        <tbody class="divide-y divide-slate-100">
+          <tr><td class="p-4 font-bold text-deep">Amazon CloudFront</td><td class="p-4">エッジ配信・HTTPS終端・キャッシュ</td><td class="p-4 text-mute">高速化・HTTPS・DDoS防御を低コストで実現</td></tr>
+          <tr class="bg-mist/50"><td class="p-4 font-bold text-deep">Application Load Balancer</td><td class="p-4">L7ロードバランサ・振り分け</td><td class="p-4 text-mute">可用性向上・集約・ヘルスチェック</td></tr>
+          <tr><td class="p-4 font-bold text-deep">Amazon ECS Fargate</td><td class="p-4">サーバー管理不要のコンテナ実行基盤</td><td class="p-4 text-mute">運用負荷を抑えつつ自動スケール・無停止更新</td></tr>
+          <tr class="bg-mist/50"><td class="p-4 font-bold text-deep">Aurora Serverless v2</td><td class="p-4">自動伸縮RDB（読み書き分離）</td><td class="p-4 text-mute">負荷に応じ自動拡張、アイドル時は停止し低コスト</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="reveal text-xs text-mute mt-3">※ いずれも AWS マネージドサービスを採用し、構築・運用コストと障害リスクを最小化しています。</p>
+  </div>
+</section>
+
+<!-- 課題→解決 -->
+<section class="py-16 md:py-24 bg-white">
+  <div class="max-w-5xl mx-auto px-5">
+    <div class="reveal mb-10"><p class="text-teal font-bold tracking-widest text-sm mb-2">PROBLEM → SOLUTION</p><h2 class="text-2xl md:text-4xl font-black">課題と解決アプローチ</h2></div>
+    <div class="space-y-4">
+      <div class="reveal card-h grid md:grid-cols-[1fr_auto_1.3fr] items-center gap-4 bg-mist rounded-2xl p-5 border border-slate-100"><div class="font-bold flex items-center gap-3"><i class="fa-solid fa-triangle-exclamation text-gold"></i>アクセス急増に耐えられない</div><i class="fa-solid fa-arrow-right text-teal hidden md:block"></i><div class="text-sm text-mute">Fargate と Aurora Serverless v2 の自動スケールで需要に追従</div></div>
+      <div class="reveal card-h grid md:grid-cols-[1fr_auto_1.3fr] items-center gap-4 bg-mist rounded-2xl p-5 border border-slate-100"><div class="font-bold flex items-center gap-3"><i class="fa-solid fa-triangle-exclamation text-gold"></i>インフラコストが高い・読めない</div><i class="fa-solid fa-arrow-right text-teal hidden md:block"></i><div class="text-sm text-mute">Serverless v2＋従量課金、アイドル時は自動停止で無駄を削減</div></div>
+      <div class="reveal card-h grid md:grid-cols-[1fr_auto_1.3fr] items-center gap-4 bg-mist rounded-2xl p-5 border border-slate-100"><div class="font-bold flex items-center gap-3"><i class="fa-solid fa-triangle-exclamation text-gold"></i>セキュリティに不安がある</div><i class="fa-solid fa-arrow-right text-teal hidden md:block"></i><div class="text-sm text-mute">ネットワーク分離・最小権限IAM・Secrets Manager・オリジン保護</div></div>
+      <div class="reveal card-h grid md:grid-cols-[1fr_auto_1.3fr] items-center gap-4 bg-mist rounded-2xl p-5 border border-slate-100"><div class="font-bold flex items-center gap-3"><i class="fa-solid fa-triangle-exclamation text-gold"></i>構築／運用が属人化している</div><i class="fa-solid fa-arrow-right text-teal hidden md:block"></i><div class="text-sm text-mute">AWS CDK でコード化し、誰でも再現・変更影響を事前確認</div></div>
+      <div class="reveal card-h grid md:grid-cols-[1fr_auto_1.3fr] items-center gap-4 bg-mist rounded-2xl p-5 border border-slate-100"><div class="font-bold flex items-center gap-3"><i class="fa-solid fa-triangle-exclamation text-gold"></i>リリースで停止・失敗が怖い</div><i class="fa-solid fa-arrow-right text-teal hidden md:block"></i><div class="text-sm text-mute">ローリングデプロイで無停止更新、ヘルスチェックで自動復旧</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 非機能要件 -->
+<section id="nfr" class="py-16 md:py-24 bg-mist">
+  <div class="max-w-6xl mx-auto px-5">
+    <div class="reveal mb-10"><p class="text-teal font-bold tracking-widest text-sm mb-2">NON-FUNCTIONAL</p><h2 class="text-2xl md:text-4xl font-black">非機能要件への作り込み</h2>
+      <p class="text-mute mt-3">「動く」だけでなく、本番運用に求められる品質を標準で作り込みます。</p></div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><div class="flex items-center gap-2 font-bold text-deep mb-3"><i class="fa-solid fa-shield-halved"></i>セキュリティ</div><ul class="text-sm text-mute space-y-1.5"><li>3層ネットワーク分離</li><li>ALBはCloudFront経由のみ許可</li><li>認証情報はSecrets Manager</li><li>IAMは最小権限</li></ul></div>
+      <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><div class="flex items-center gap-2 font-bold text-deep mb-3"><i class="fa-solid fa-coins"></i>コスト最適化</div><ul class="text-sm text-mute space-y-1.5"><li>Serverless v2 Min0 で自動停止</li><li>固定費(NAT/ALB)を可視化</li><li>タグでコスト按分・分析</li><li>従量課金で無駄を排除</li></ul></div>
+      <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><div class="flex items-center gap-2 font-bold text-deep mb-3"><i class="fa-solid fa-heart-pulse"></i>可用性</div><ul class="text-sm text-mute space-y-1.5"><li>マルチAZで単一障害点回避</li><li>ALBヘルスチェックで異常隔離</li><li>リーダー昇格で自動切替</li><li>無停止のローリング更新</li></ul></div>
+      <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><div class="flex items-center gap-2 font-bold text-deep mb-3"><i class="fa-solid fa-screwdriver-wrench"></i>運用性</div><ul class="text-sm text-mute space-y-1.5"><li>AWS CDKでコード化</li><li>cdk diffで変更影響を事前確認</li><li>CloudWatchへログ集約</li><li>環境の再現・複製が容易</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- 実装例 + 対応案件 -->
+<section class="py-16 md:py-24 bg-white">
+  <div class="max-w-6xl mx-auto px-5 grid lg:grid-cols-2 gap-10">
+    <div class="reveal">
+      <p class="text-teal font-bold tracking-widest text-sm mb-2">IMPLEMENTATION</p>
+      <h2 class="text-2xl md:text-3xl font-black mb-4">実装例：読み書き分離デモ</h2>
+      <p class="text-mute leading-relaxed mb-4">CDK（TypeScript）単一スタックで全構成をデプロイ／破棄可能。コンテナ内で FastAPI の商品アプリを動かし、<b class="text-ink">Aurora の読み書き分離</b>を可視化します。</p>
+      <ul class="space-y-2.5 text-sm">
+        <li class="flex gap-2"><i class="fa-solid fa-circle-check text-teal mt-1"></i><span><code class="bg-mist px-1.5 rounded">GET /</code> 商品一覧 → reader 端点（読）</span></li>
+        <li class="flex gap-2"><i class="fa-solid fa-circle-check text-teal mt-1"></i><span><code class="bg-mist px-1.5 rounded">POST /products</code> 追加 → writer 端点（書）</span></li>
+        <li class="flex gap-2"><i class="fa-solid fa-circle-check text-teal mt-1"></i><span>どのノードで読んだか表示（複製遅延も体感）</span></li>
+        <li class="flex gap-2"><i class="fa-solid fa-circle-check text-teal mt-1"></i><span>ALB 直結は安全グループで拒否（入口は CloudFront のみ）</span></li>
+      </ul>
+    </div>
+    <div class="reveal">
+      <p class="text-teal font-bold tracking-widest text-sm mb-2">PROJECT TYPES</p>
+      <h2 class="text-2xl md:text-3xl font-black mb-4">対応可能な案件タイプ</h2>
+      <div class="grid sm:grid-cols-2 gap-3 text-sm">
+        <div class="bg-mist rounded-xl p-4 border border-slate-100"><b>SaaS・Webサービス基盤</b><br><span class="text-mute text-xs">製品バックエンド構築・運用</span></div>
+        <div class="bg-mist rounded-xl p-4 border border-slate-100"><b>EC・予約システム</b><br><span class="text-mute text-xs">読み書きの多い業務に対応</span></div>
+        <div class="bg-mist rounded-xl p-4 border border-slate-100"><b>API バックエンド</b><br><span class="text-mute text-xs">REST・GraphQL 基盤</span></div>
+        <div class="bg-mist rounded-xl p-4 border border-slate-100"><b>社内業務システム</b><br><span class="text-mute text-xs">管理画面・ワークフロー</span></div>
+        <div class="bg-mist rounded-xl p-4 border border-slate-100"><b>クラウド移行・刷新</b><br><span class="text-mute text-xs">既存システムのコンテナ化</span></div>
+        <div class="bg-mist rounded-xl p-4 border border-slate-100"><b>データ処理・連携基盤</b><br><span class="text-mute text-xs">バッチ・データ/外部API連携</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ドキュメント -->
+<section id="docs" class="py-16 md:py-24 bg-mist">
+  <div class="max-w-6xl mx-auto px-5">
+    <div class="reveal mb-10"><p class="text-teal font-bold tracking-widest text-sm mb-2">DOCUMENTS</p><h2 class="text-2xl md:text-4xl font-black">資料・ドキュメント</h2>
+      <p class="text-mute mt-3">ご紹介資料と、構築・運用の技術ドキュメントです。</p></div>
+    <div class="grid sm:grid-cols-2 gap-5">
+      <a href="docs/受託開発ケイパビリティ_コンテナWeb.pdf" target="_blank" class="reveal card-h flex items-center gap-4 bg-white rounded-2xl p-5 border border-slate-100"><div class="w-12 h-12 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center text-xl"><i class="fa-solid fa-file-pdf"></i></div><div class="flex-1"><div class="font-bold">コンテナWeb構築ケイパビリティ（ご紹介）</div><div class="text-xs text-mute mt-0.5">PDF・日本語　リファレンス構成のご紹介デッキ</div></div><i class="fa-solid fa-download text-mute"></i></a>
+      <a href="docs/コンテナWeb_README.md" target="_blank" class="reveal card-h flex items-center gap-4 bg-white rounded-2xl p-5 border border-slate-100"><div class="w-12 h-12 rounded-xl bg-teal/10 text-teal flex items-center justify-center text-xl"><i class="fa-solid fa-book"></i></div><div class="flex-1"><div class="font-bold">README（概要・デプロイ手順）</div><div class="text-xs text-mute mt-0.5">Markdown　構成図・コスト・デプロイ・破棄</div></div><i class="fa-solid fa-up-right-from-square text-mute"></i></a>
+      <a href="docs/コンテナWeb_WALKTHROUGH.md" target="_blank" class="reveal card-h flex items-center gap-4 bg-white rounded-2xl p-5 border border-slate-100"><div class="w-12 h-12 rounded-xl bg-teal/10 text-teal flex items-center justify-center text-xl"><i class="fa-solid fa-list-check"></i></div><div class="flex-1"><div class="font-bold">WALKTHROUGH（構築後の点検）</div><div class="text-xs text-mute mt-0.5">Markdown　コンソール巡検チェックリスト</div></div><i class="fa-solid fa-up-right-from-square text-mute"></i></a>
+      <a href="docs/コンテナWeb_AWS-NOTES.md" target="_blank" class="reveal card-h flex items-center gap-4 bg-white rounded-2xl p-5 border border-slate-100"><div class="w-12 h-12 rounded-xl bg-teal/10 text-teal flex items-center justify-center text-xl"><i class="fa-solid fa-file-lines"></i></div><div class="flex-1"><div class="font-bold">AWS-NOTES（技術ノート）</div><div class="text-xs text-mute mt-0.5">Markdown　設計判断・AWS知識の整理</div></div><i class="fa-solid fa-up-right-from-square text-mute"></i></a>
+      <a href="docs/コンテナWeb_EXERCISES.md" target="_blank" class="reveal card-h flex items-center gap-4 bg-white rounded-2xl p-5 border border-slate-100"><div class="w-12 h-12 rounded-xl bg-teal/10 text-teal flex items-center justify-center text-xl"><i class="fa-solid fa-code-compare"></i></div><div class="flex-1"><div class="font-bold">EXERCISES（cdk diff 演習）</div><div class="text-xs text-mute mt-0.5">Markdown　update / replace の変更管理</div></div><i class="fa-solid fa-up-right-from-square text-mute"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA / footer -->
+<section class="hero-grad text-white py-16 md:py-20 text-center">
+  <div class="max-w-3xl mx-auto px-5">
+    <h2 class="reveal text-2xl md:text-4xl font-black mb-4">堅牢な業務Webを、御社にも。</h2>
+    <p class="reveal text-white/80 mb-8">コンテナ × サーバーレス、案件特性に応じて最適構成をご提案します。</p>
+    <a href="index.html#contact" class="reveal inline-block px-8 py-3.5 rounded-full bg-gold text-navy font-bold hover:brightness-105 shadow-lg shadow-gold/20">ご相談はこちら</a>
+    <div class="reveal mt-6"><a href="index.html" class="text-white/70 text-sm hover:text-white"><i class="fa-solid fa-arrow-left mr-1"></i>ケイパビリティTOPに戻る</a></div>
+  </div>
+</section>
+<footer class="bg-navy text-white/60 py-8">
+  <div class="max-w-6xl mx-auto px-5 flex flex-col md:flex-row items-center justify-between gap-2 text-sm">
+    <div class="flex items-center gap-2 text-white/80 font-bold"><i class="fa-solid fa-cubes text-teal"></i>コンテナWeb 業務システム</div>
+    <div>受託開発ケーススタディ　｜　御社名（要編集）　｜　2026</div>
+  </div>
+</footer>
+
+<script>
+  const nav=document.getElementById('nav');
+  function onScroll(){ if(window.scrollY>30){nav.classList.add('bg-navy','shadow-lg');}else{nav.classList.remove('bg-navy','shadow-lg');} }
+  window.addEventListener('scroll',onScroll);onScroll();
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}})},{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
