@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BrightStar 社内システム ｜ LINE で完結する勤怠・通勤費 管理</title>
+<meta name="description" content="勤怠（作業時間記録簿）と通勤費（経費）の提出・督促・集計を LINE のチャットだけで完結する社内システム。社員名簿を主データに、未提出者の可視化・自動リマインド・一括ダウンロードを AWS サーバーレス＋CDK でフルスクラッチ開発。" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: {
+  colors:{ navy:'#0E2238', navy2:'#16314e', deep:'#0B5A82', teal:'#1390A6', tealx:'#16b5cf', gold:'#E0A43B', ink:'#1B2733', mute:'#5E6B7A', mist:'#F4F7FB' },
+  fontFamily:{ jp:['"Noto Sans JP"','sans-serif'] }
+}}}
+</script>
+<style>
+  html{scroll-behavior:smooth} body{font-family:'Noto Sans JP',sans-serif}
+  .hero-grad{background:radial-gradient(1100px 600px at 80% -10%,rgba(19,144,166,.45),transparent),radial-gradient(900px 500px at 0% 110%,rgba(11,90,130,.5),transparent),linear-gradient(135deg,#0E2238 0%,#10324c 60%,#0b3a52 100%)}
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+  .reveal.in{opacity:1;transform:none}
+  .card-h{transition:transform .25s ease,box-shadow .25s ease}
+  .card-h:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(14,34,56,.16)}
+  ::selection{background:#1390A6;color:#fff}
+</style>
+</head>
+<body class="text-ink bg-white antialiased">
+
+<!-- NAV -->
+<header id="nav" class="fixed top-0 inset-x-0 z-50 transition-all duration-300">
+  <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
+    <a href="index.html" class="flex items-center gap-2 font-bold text-white">
+      <span class="inline-flex w-9 h-9 rounded-xl bg-teal items-center justify-center text-white"><i class="fa-solid fa-building-user"></i></span>
+      <span class="leading-tight">BrightStar<span class="block text-[10px] font-medium tracking-widest opacity-70">社内システム</span></span>
+    </a>
+    <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-white/85">
+      <a href="#features" class="hover:text-white">機能</a>
+      <a href="#roles" class="hover:text-white">利用者</a>
+      <a href="#arch" class="hover:text-white">構成</a>
+      <a href="#docs" class="hover:text-white">資料</a>
+      <a href="brightstar.html" class="hover:text-white">研修アシスタント</a>
+      <a href="index.html" class="ml-1 px-4 py-2 rounded-full border border-white/30 text-white hover:bg-white/10"><i class="fa-solid fa-arrow-left mr-1"></i>ケイパビリティTOP</a>
+    </nav>
+    <a href="index.html" class="md:hidden text-white text-sm"><i class="fa-solid fa-arrow-left mr-1"></i>TOP</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero-grad text-white pt-28 pb-20 md:pt-36 md:pb-28">
+  <div class="max-w-6xl mx-auto px-5">
+    <p class="text-gold font-bold tracking-widest text-sm mb-4">CASE STUDY ／ サーバーレス × LINE × CDK</p>
+    <h1 class="text-3xl md:text-5xl font-black leading-tight mb-5">BrightStar 社内システム</h1>
+    <p class="text-white/85 text-lg md:text-xl mb-7">毎月の「勤怠（作業時間記録簿）」と「通勤費（経費）」の提出・督促・集計を、<strong class="text-tealx">LINE のチャットだけで完結</strong>。社員名簿を主データに、未提出者を可視化し、自動リマインドと一括ダウンロードまで。AWS サーバーレス＋<strong class="text-tealx">CDK(TypeScript)</strong> でフルスクラッチ開発。</p>
+    <div class="flex flex-wrap gap-3 mb-9">
+      <a href="#docs" class="px-6 py-3 rounded-full bg-gold text-navy font-bold hover:brightness-105 shadow-lg shadow-gold/20"><i class="fa-solid fa-file-arrow-down mr-2"></i>資料をダウンロード</a>
+      <a href="#features" class="px-6 py-3 rounded-full border border-white/30 text-white font-bold hover:bg-white/10">機能を見る</a>
+    </div>
+    <div class="flex flex-wrap gap-3">
+      <span class="px-4 py-2 rounded-full bg-white/10 border border-white/15 text-sm"><i class="fa-solid fa-bolt text-tealx mr-2"></i>フルサーバーレス</span>
+      <span class="px-4 py-2 rounded-full bg-white/10 border border-white/15 text-sm"><i class="fa-brands fa-line text-tealx mr-2"></i>LINE 完結</span>
+      <span class="px-4 py-2 rounded-full bg-white/10 border border-white/15 text-sm"><i class="fa-solid fa-cubes text-tealx mr-2"></i>IaC: AWS CDK</span>
+      <span class="px-4 py-2 rounded-full bg-white/10 border border-white/15 text-sm"><i class="fa-solid fa-clock text-tealx mr-2"></i>自動リマインド</span>
+    </div>
+  </div>
+</section>
+
+<!-- 概要 + KPI -->
+<section class="py-16 md:py-20 bg-white">
+  <div class="max-w-6xl mx-auto px-5">
+    <div class="reveal max-w-3xl mb-10">
+      <p class="text-teal font-bold tracking-widest text-sm mb-2">OVERVIEW</p>
+      <h2 class="text-2xl md:text-3xl font-black mb-3">概要</h2>
+      <p class="text-mute leading-relaxed">社員は普段使う LINE で、記入した Excel を送るだけ。人事は LINE で全社の提出状況を即確認し、未提出者へワンタップ督促、当月分を一括ダウンロード。社員名簿（DB）が「提出対象」を決めるため、LINE 未登録の社員も `※Line未登録` として可視化されます。固定費ほぼゼロの従量課金で運用できます。</p>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      <div class="reveal card-h bg-mist rounded-xl p-5 text-center border border-slate-100"><div class="text-3xl font-black text-deep">3</div><div class="text-xs text-mute mt-1">DynamoDB テーブル</div></div>
+      <div class="reveal card-h bg-mist rounded-xl p-5 text-center border border-slate-100"><div class="text-3xl font-black text-deep">2</div><div class="text-xs text-mute mt-1">Lambda 関数</div></div>
+      <div class="reveal card-h bg-mist rounded-xl p-5 text-center border border-slate-100"><div class="text-3xl font-black text-deep">LINE</div><div class="text-xs text-mute mt-1">完結チャネル</div></div>
+      <div class="reveal card-h bg-mist rounded-xl p-5 text-center border border-slate-100"><div class="text-3xl font-black text-deep">CDK</div><div class="text-xs text-mute mt-1">IaC (TypeScript)</div></div>
+      <div class="reveal card-h bg-mist rounded-xl p-5 text-center border border-slate-100"><div class="text-3xl font-black text-deep">月次</div><div class="text-xs text-mute mt-1">自動リマインド</div></div>
+      <div class="reveal card-h bg-mist rounded-xl p-5 text-center border border-slate-100"><div class="text-3xl font-black text-deep">≈¥0</div><div class="text-xs text-mute mt-1">固定費（従量）</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 主要機能 -->
+<section id="features" class="py-16 md:py-24 bg-mist">
+  <div class="max-w-6xl mx-auto px-5">
+    <div class="reveal mb-10">
+      <p class="text-teal font-bold tracking-widest text-sm mb-2">FEATURES</p>
+      <h2 class="text-2xl md:text-4xl font-black">主要機能</h2>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-deep text-white flex items-center justify-center mb-4"><i class="fa-solid fa-file-arrow-up"></i></div><div class="font-bold text-lg mb-1.5">提出（再提出可）</div><p class="text-sm text-mute leading-relaxed">勤怠・経費の Excel を送るだけ。ファイル名から自動分類し S3 保存＋受付記録。判別不能なら種別を質問。</p></div>
+      <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-teal text-white flex items-center justify-center mb-4"><i class="fa-solid fa-file-arrow-down"></i></div><div class="font-bold text-lg mb-1.5">様式ダウンロード</div><p class="text-sm text-mute leading-relaxed">「テンプレ」で空白様式（勤怠・経費）をボタンから取得。長いURLはボタンに隠す設計。</p></div>
+      <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-deep text-white flex items-center justify-center mb-4"><i class="fa-solid fa-clock-rotate-left"></i></div><div class="font-bold text-lg mb-1.5">個人履歴</div><p class="text-sm text-mute leading-relaxed">自分の提出履歴とダウンロードボタンを表示。最新資料をすぐ確認。</p></div>
+      <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-teal text-white flex items-center justify-center mb-4"><i class="fa-solid fa-user-xmark"></i></div><div class="font-bold text-lg mb-1.5">未提出の可視化</div><p class="text-sm text-mute leading-relaxed">「未提出確認[YYYYMM]」で未提出者を一覧。LINE 未登録者も `※Line未登録` 付きで表示。</p></div>
+      <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-deep text-white flex items-center justify-center mb-4"><i class="fa-solid fa-bell"></i></div><div class="font-bold text-lg mb-1.5">自動・手動リマインド</div><p class="text-sm text-mute leading-relaxed">毎月25・28日 09:00(JST) に未提出者へ自動配信。人事は「催促」で即時督促。提出済は対象外。</p></div>
+      <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-teal text-white flex items-center justify-center mb-4"><i class="fa-solid fa-file-zipper"></i></div><div class="font-bold text-lg mb-1.5">一括ダウンロード</div><p class="text-sm text-mute leading-relaxed">「一括DL」で当月の全提出を 1 つの zip にまとめ、ボタンから取得。</p></div>
+      <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-deep text-white flex items-center justify-center mb-4"><i class="fa-solid fa-address-book"></i></div><div class="font-bold text-lg mb-1.5">社員名簿 CRUD（人事）</div><p class="text-sm text-mute leading-relaxed">LINE から名簿の追加・変更・削除。変更は人事全員へ自動通知。</p></div>
+      <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-teal text-white flex items-center justify-center mb-4"><i class="fa-solid fa-id-card"></i></div><div class="font-bold text-lg mb-1.5">氏名だけで登録</div><p class="text-sm text-mute leading-relaxed">初回は氏名を送るだけ。社員名簿と照合して本人特定、部署は名簿から自動取得。</p></div>
+      <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-deep text-white flex items-center justify-center mb-4"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="font-bold text-lg mb-1.5">締め後の再提出確認</div><p class="text-sm text-mute leading-relaxed">月をまたいだ再提出は、人事全員へ確認通知を自動配信。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 利用者ごと -->
+<section id="roles" class="py-16 md:py-24 bg-white">
+  <div class="max-w-6xl mx-auto px-5">
+    <div class="reveal mb-10">
+      <p class="text-teal font-bold tracking-widest text-sm mb-2">FOR EACH ROLE</p>
+      <h2 class="text-2xl md:text-4xl font-black">利用者ごとの機能</h2>
+    </div>
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="reveal rounded-2xl border border-slate-200 overflow-hidden">
+        <div class="bg-deep text-white p-5 font-bold text-lg"><i class="fa-solid fa-user mr-2"></i>社員（LINE）</div>
+        <ul class="p-6 space-y-2.5 text-sm text-ink">
+          <li class="flex gap-2"><i class="fa-solid fa-check text-teal mt-1"></i>氏名だけで登録（部署は名簿から自動）</li>
+          <li class="flex gap-2"><i class="fa-solid fa-check text-teal mt-1"></i>勤怠・経費の Excel を送って提出（再提出可）</li>
+          <li class="flex gap-2"><i class="fa-solid fa-check text-teal mt-1"></i>「テンプレ」で空白様式を取得</li>
+          <li class="flex gap-2"><i class="fa-solid fa-check text-teal mt-1"></i>「履歴」で自分の提出を確認・ダウンロード</li>
+        </ul>
+      </div>
+      <div class="reveal rounded-2xl border border-slate-200 overflow-hidden">
+        <div class="bg-teal text-white p-5 font-bold text-lg"><i class="fa-solid fa-user-tie mr-2"></i>人事</div>
+        <ul class="p-6 space-y-2.5 text-sm text-ink">
+          <li class="flex gap-2"><i class="fa-solid fa-check text-teal mt-1"></i>未提出確認[YYYYMM]／一覧[YYYYMM]（未登録者も可視化）</li>
+          <li class="flex gap-2"><i class="fa-solid fa-check text-teal mt-1"></i>催促[YYYYMM]（未提出者へ LINE 配信）</li>
+          <li class="flex gap-2"><i class="fa-solid fa-check text-teal mt-1"></i>一括DL（当月分を zip でまとめて取得）</li>
+          <li class="flex gap-2"><i class="fa-solid fa-check text-teal mt-1"></i>社員名簿の追加・変更・削除（人事全員へ通知）</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- アーキテクチャ -->
+<section id="arch" class="py-16 md:py-24 bg-navy text-white">
+  <div class="max-w-6xl mx-auto px-5">
+    <div class="reveal mb-10">
+      <p class="text-gold font-bold tracking-widest text-sm mb-2">ARCHITECTURE</p>
+      <h2 class="text-2xl md:text-4xl font-black">フルサーバーレス構成（CDK）</h2>
+      <p class="text-white/70 mt-3">固定サーバなし・従量課金・自動スケール。LINE は署名検証のみで接続（中継・暗号・可信IP 不要）。</p>
+    </div>
+    <div class="reveal flex flex-col md:flex-row items-stretch gap-3 mb-6">
+      <div class="flex-1 rounded-xl bg-navy2 border border-white/10 p-4 text-center"><i class="fa-brands fa-line text-tealx text-xl mb-1"></i><div class="font-bold text-sm">LINE 公式アカウント</div><div class="text-[11px] text-white/60">社員・人事</div></div>
+      <div class="flex items-center justify-center text-tealx"><i class="fa-solid fa-arrow-right rotate-90 md:rotate-0"></i></div>
+      <div class="flex-1 rounded-xl bg-navy2 border border-white/10 p-4 text-center"><i class="fa-solid fa-link text-tealx text-xl mb-1"></i><div class="font-bold text-sm">Lambda Function URL</div><div class="text-[11px] text-white/60">webhook / 短縮DL</div></div>
+      <div class="flex items-center justify-center text-tealx"><i class="fa-solid fa-arrow-right rotate-90 md:rotate-0"></i></div>
+      <div class="flex-1 rounded-xl bg-teal border border-white/10 p-4 text-center"><i class="fa-solid fa-bolt text-white text-xl mb-1"></i><div class="font-bold text-sm">webhook (Python)</div><div class="text-[11px] text-white/80">署名検証・ルーティング</div></div>
+      <div class="flex items-center justify-center text-tealx"><i class="fa-solid fa-arrow-right rotate-90 md:rotate-0"></i></div>
+      <div class="flex-1 rounded-xl bg-navy2 border border-white/10 p-4 text-center"><i class="fa-solid fa-database text-tealx text-xl mb-1"></i><div class="font-bold text-sm">DynamoDB / S3</div><div class="text-[11px] text-white/60">名簿・提出・保管</div></div>
+    </div>
+    <div class="reveal grid sm:grid-cols-3 gap-3">
+      <div class="rounded-xl bg-navy2 border border-white/10 p-4 text-center"><i class="fa-solid fa-database text-gold text-xl mb-1"></i><div class="font-bold text-sm">DynamoDB ×3</div><div class="text-[11px] text-white/60">roster / employees / submissions</div></div>
+      <div class="rounded-xl bg-navy2 border border-white/10 p-4 text-center"><i class="fa-solid fa-box-archive text-gold text-xl mb-1"></i><div class="font-bold text-sm">S3（バージョン管理）</div><div class="text-[11px] text-white/60">60日→Deep Archive・365日削除</div></div>
+      <div class="rounded-xl bg-navy2 border border-white/10 p-4 text-center"><i class="fa-solid fa-clock text-gold text-xl mb-1"></i><div class="font-bold text-sm">EventBridge → Reminder</div><div class="text-[11px] text-white/60">月次・未提出者へ自動配信</div></div>
+    </div>
+    <div class="reveal mt-6 text-sm text-white/70 leading-relaxed">
+      <span class="text-gold font-bold">設計の勘所：</span>社員名簿（DB）を主データにして「提出対象」を確定し、LINE 未登録者も可視化／資格情報は SSM SecureString で git に出さない／提出物DLは <span class="text-tealx">HMAC 署名付き短縮リンク</span>で越権防止（LINE のボタンURL 1,000文字制限も回避）／保存は 2か月は即時DL、以降 Deep Archive で最安、1年で自動削除。Lambda は外部依存ゼロでデプロイが軽量。
+    </div>
+  </div>
+</section>
+
+<!-- 技術スタック -->
+<section class="py-16 md:py-20 bg-mist">
+  <div class="max-w-6xl mx-auto px-5">
+    <div class="reveal mb-8"><p class="text-teal font-bold tracking-widest text-sm mb-2">TECH STACK</p><h2 class="text-2xl md:text-3xl font-black">技術スタック</h2></div>
+    <div class="reveal flex flex-wrap gap-2.5">
+      <span class="px-4 py-2 rounded-full bg-white border border-slate-200 text-sm font-medium"><i class="fa-brands fa-aws text-gold mr-2"></i>AWS</span>
+      <span class="px-4 py-2 rounded-full bg-white border border-slate-200 text-sm font-medium"><i class="fa-brands fa-python text-deep mr-2"></i>Python 3.12 (arm64)</span>
+      <span class="px-4 py-2 rounded-full bg-white border border-slate-200 text-sm font-medium">Lambda + Function URL</span>
+      <span class="px-4 py-2 rounded-full bg-white border border-slate-200 text-sm font-medium">DynamoDB</span>
+      <span class="px-4 py-2 rounded-full bg-white border border-slate-200 text-sm font-medium">S3（バージョン管理・ライフサイクル）</span>
+      <span class="px-4 py-2 rounded-full bg-white border border-slate-200 text-sm font-medium">EventBridge</span>
+      <span class="px-4 py-2 rounded-full bg-white border border-slate-200 text-sm font-medium">SSM Parameter Store</span>
+      <span class="px-4 py-2 rounded-full bg-white border border-slate-200 text-sm font-medium"><i class="fa-solid fa-cubes text-deep mr-2"></i>IaC: AWS CDK (TypeScript)</span>
+      <span class="px-4 py-2 rounded-full bg-white border border-slate-200 text-sm font-medium"><i class="fa-brands fa-line text-green-500 mr-2"></i>LINE Messaging API</span>
+    </div>
+  </div>
+</section>
+
+<!-- ドキュメント -->
+<section id="docs" class="py-16 md:py-24 bg-white">
+  <div class="max-w-6xl mx-auto px-5">
+    <div class="reveal mb-10">
+      <p class="text-teal font-bold tracking-widest text-sm mb-2">DOCUMENTS</p>
+      <h2 class="text-2xl md:text-4xl font-black">資料・ドキュメント</h2>
+      <p class="text-mute mt-3">利用マニュアルから設計・運用まで整備しています。クリックで閲覧できます。</p>
+    </div>
+    <div class="grid sm:grid-cols-2 gap-5">
+      <a href="docs/利用マニュアル.md" target="_blank" class="reveal card-h flex items-center gap-4 bg-mist rounded-2xl p-5 border border-slate-100">
+        <div class="w-12 h-12 rounded-xl bg-teal/10 text-teal flex items-center justify-center text-xl"><i class="fa-solid fa-book"></i></div>
+        <div class="flex-1"><div class="font-bold">利用マニュアル（社員・人事）</div><div class="text-xs text-mute mt-0.5">Markdown　操作手順・コマンド一覧・FAQ</div></div>
+        <i class="fa-solid fa-up-right-from-square text-mute"></i>
+      </a>
+      <a href="docs/機能説明書.md" target="_blank" class="reveal card-h flex items-center gap-4 bg-mist rounded-2xl p-5 border border-slate-100">
+        <div class="w-12 h-12 rounded-xl bg-teal/10 text-teal flex items-center justify-center text-xl"><i class="fa-solid fa-file-lines"></i></div>
+        <div class="flex-1"><div class="font-bold">機能説明書</div><div class="text-xs text-mute mt-0.5">Markdown　機能と利用シナリオ</div></div>
+        <i class="fa-solid fa-up-right-from-square text-mute"></i>
+      </a>
+      <a href="docs/アーキテクチャ.md" target="_blank" class="reveal card-h flex items-center gap-4 bg-mist rounded-2xl p-5 border border-slate-100">
+        <div class="w-12 h-12 rounded-xl bg-teal/10 text-teal flex items-center justify-center text-xl"><i class="fa-solid fa-sitemap"></i></div>
+        <div class="flex-1"><div class="font-bold">アーキテクチャ</div><div class="text-xs text-mute mt-0.5">Markdown　構成図・データモデル・データフロー</div></div>
+        <i class="fa-solid fa-up-right-from-square text-mute"></i>
+      </a>
+      <a href="docs/コードロジック.md" target="_blank" class="reveal card-h flex items-center gap-4 bg-mist rounded-2xl p-5 border border-slate-100">
+        <div class="w-12 h-12 rounded-xl bg-teal/10 text-teal flex items-center justify-center text-xl"><i class="fa-solid fa-code"></i></div>
+        <div class="flex-1"><div class="font-bold">コードロジック</div><div class="text-xs text-mute mt-0.5">Markdown　モジュール構成・主要関数・処理フロー</div></div>
+        <i class="fa-solid fa-up-right-from-square text-mute"></i>
+      </a>
+      <a href="docs/システム要件.md" target="_blank" class="reveal card-h flex items-center gap-4 bg-mist rounded-2xl p-5 border border-slate-100">
+        <div class="w-12 h-12 rounded-xl bg-teal/10 text-teal flex items-center justify-center text-xl"><i class="fa-solid fa-list-check"></i></div>
+        <div class="flex-1"><div class="font-bold">システム要件</div><div class="text-xs text-mute mt-0.5">Markdown　AWS前提・機密管理・保管ポリシー</div></div>
+        <i class="fa-solid fa-up-right-from-square text-mute"></i>
+      </a>
+      <a href="docs/運用デプロイ説明書.md" target="_blank" class="reveal card-h flex items-center gap-4 bg-mist rounded-2xl p-5 border border-slate-100">
+        <div class="w-12 h-12 rounded-xl bg-teal/10 text-teal flex items-center justify-center text-xl"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+        <div class="flex-1"><div class="font-bold">使用説明書（デプロイ・運用・排错）</div><div class="text-xs text-mute mt-0.5">Markdown　CDKデプロイ・運用・トラブル対応</div></div>
+        <i class="fa-solid fa-up-right-from-square text-mute"></i>
+      </a>
+      <a href="docs/プレゼン資料.md" target="_blank" class="reveal card-h flex items-center gap-4 bg-mist rounded-2xl p-5 border border-slate-100 sm:col-span-2">
+        <div class="w-12 h-12 rounded-xl bg-gold/15 text-gold flex items-center justify-center text-xl"><i class="fa-solid fa-presentation-screen"></i></div>
+        <div class="flex-1"><div class="font-bold">ご紹介資料（プレゼン）</div><div class="text-xs text-mute mt-0.5">Markdown　案件紹介デッキ（10 セクション）</div></div>
+        <i class="fa-solid fa-up-right-from-square text-mute"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA / footer -->
+<section class="hero-grad text-white py-16 md:py-20 text-center">
+  <div class="max-w-3xl mx-auto px-5">
+    <h2 class="reveal text-2xl md:text-4xl font-black mb-4">同様の社内 DX を、御社にも。</h2>
+    <p class="reveal text-white/80 mb-8">LINE 連携・サーバーレス基盤・IaC（CDK）の受託開発を承ります。</p>
+    <a href="index.html#contact" class="reveal inline-block px-8 py-3.5 rounded-full bg-gold text-navy font-bold hover:brightness-105 shadow-lg shadow-gold/20">ご相談はこちら</a>
+    <div class="reveal mt-6"><a href="brightstar.html" class="text-white/70 text-sm hover:text-white mr-4"><i class="fa-solid fa-robot mr-1"></i>研修アシスタントを見る</a><a href="index.html" class="text-white/70 text-sm hover:text-white"><i class="fa-solid fa-arrow-left mr-1"></i>ケイパビリティTOP</a></div>
+  </div>
+</section>
+<footer class="bg-navy text-white/60 py-8">
+  <div class="max-w-6xl mx-auto px-5 flex flex-col md:flex-row items-center justify-between gap-2 text-sm">
+    <div class="flex items-center gap-2 text-white/80 font-bold"><i class="fa-solid fa-building-user text-teal"></i>BrightStar 社内システム</div>
+    <div>受託開発ケーススタディ　｜　御社名（要編集）　｜　2026</div>
+  </div>
+</footer>
+
+<script>
+  const nav=document.getElementById('nav');
+  function onScroll(){ if(window.scrollY>30){nav.classList.add('bg-navy','shadow-lg');}else{nav.classList.remove('bg-navy','shadow-lg');} }
+  window.addEventListener('scroll',onScroll);onScroll();
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}})},{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
