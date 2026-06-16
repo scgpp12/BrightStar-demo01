@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>BrightStar 研修アシスタント ｜ 微信で完結する社内研修DX</title>
-<meta name="description" content="微信(WeChat)で完結する社内研修アシスタント。受講管理・AI問答・自動リマインドをAWSサーバーレス＋生成AIでフルスクラッチ開発。機能・アーキテクチャ・ドキュメントのご紹介。" />
+<title>BrightStar 研修アシスタント ｜ 微信・LINE で完結する社内研修DX</title>
+<meta name="description" content="微信(WeChat)・LINE で完結する社内研修アシスタント。受講管理・AI問答・自動リマインド・クロスプラットフォーム連携をAWSサーバーレス＋生成AIでフルスクラッチ開発。機能・アーキテクチャ・ドキュメントのご紹介。" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -51,7 +51,7 @@ tailwind.config = { theme: { extend: {
   <div class="max-w-6xl mx-auto px-5">
     <p class="text-gold font-bold tracking-widest text-sm mb-4">CASE STUDY ／ サーバーレス × 生成AI</p>
     <h1 class="text-3xl md:text-5xl font-black leading-tight mb-5">BrightStar 研修アシスタント</h1>
-    <p class="text-white/85 text-lg md:text-xl mb-7">「微信(WeChat)」で完結する社内研修DX。受講管理・AI問答・自動リマインドを、AWSサーバーレス＋生成AIで<strong class="text-tealx">フルスクラッチ開発</strong>しました。</p>
+    <p class="text-white/85 text-lg md:text-xl mb-7">「微信(WeChat)」と「LINE」で完結する社内研修DX。受講管理・AI問答・自動リマインドを、AWSサーバーレス＋生成AIで<strong class="text-tealx">フルスクラッチ開発</strong>。バックエンドを共通化し、複数チャネルへ展開しました。</p>
     <div class="flex flex-wrap gap-3 mb-9">
       <a href="#docs" class="px-6 py-3 rounded-full bg-gold text-navy font-bold hover:brightness-105 shadow-lg shadow-gold/20"><i class="fa-solid fa-file-arrow-down mr-2"></i>資料をダウンロード</a>
       <a href="#features" class="px-6 py-3 rounded-full border border-white/30 text-white font-bold hover:bg-white/10">機能を見る</a>
@@ -60,6 +60,7 @@ tailwind.config = { theme: { extend: {
       <span class="px-4 py-2 rounded-full bg-white/10 border border-white/15 text-sm"><i class="fa-solid fa-bolt text-tealx mr-2"></i>サーバーレス</span>
       <span class="px-4 py-2 rounded-full bg-white/10 border border-white/15 text-sm"><i class="fa-solid fa-robot text-tealx mr-2"></i>生成AI・RAG</span>
       <span class="px-4 py-2 rounded-full bg-white/10 border border-white/15 text-sm"><i class="fa-solid fa-globe text-tealx mr-2"></i>多言語(日中)</span>
+      <span class="px-4 py-2 rounded-full bg-white/10 border border-white/15 text-sm"><i class="fa-brands fa-line text-tealx mr-2"></i>微信 + LINE 対応</span>
     </div>
   </div>
 </section>
@@ -74,7 +75,7 @@ tailwind.config = { theme: { extend: {
     </div>
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
       <div class="reveal card-h bg-mist rounded-xl p-5 text-center border border-slate-100"><div class="text-3xl font-black text-deep">6</div><div class="text-xs text-mute mt-1">DynamoDB テーブル</div></div>
-      <div class="reveal card-h bg-mist rounded-xl p-5 text-center border border-slate-100"><div class="text-3xl font-black text-deep">3</div><div class="text-xs text-mute mt-1">Lambda 関数</div></div>
+      <div class="reveal card-h bg-mist rounded-xl p-5 text-center border border-slate-100"><div class="text-3xl font-black text-deep">4</div><div class="text-xs text-mute mt-1">Lambda 関数</div></div>
       <div class="reveal card-h bg-mist rounded-xl p-5 text-center border border-slate-100"><div class="text-3xl font-black text-deep">14</div><div class="text-xs text-mute mt-1">自動テスト全合格</div></div>
       <div class="reveal card-h bg-mist rounded-xl p-5 text-center border border-slate-100"><div class="text-3xl font-black text-deep">2</div><div class="text-xs text-mute mt-1">IaC(SAM/CDK)</div></div>
       <div class="reveal card-h bg-mist rounded-xl p-5 text-center border border-slate-100"><div class="text-3xl font-black text-deep">約0.5円</div><div class="text-xs text-mute mt-1">AI 1問あたり(概算)</div></div>
@@ -95,8 +96,10 @@ tailwind.config = { theme: { extend: {
       <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-teal text-white flex items-center justify-center mb-4"><i class="fa-solid fa-chalkboard-user"></i></div><div class="font-bold text-lg mb-1.5">講師運営（コマンド）</div><p class="text-sm text-mute leading-relaxed">開講・公開・改訂・削除・名簿・ランダムグループ分けを文字コマンドで。</p></div>
       <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-deep text-white flex items-center justify-center mb-4"><i class="fa-solid fa-robot"></i></div><div class="font-bold text-lg mb-1.5">AI問答（任意ON）</div><p class="text-sm text-mute leading-relaxed">「AI」で有効化→自由質問にRAGで回答。OFF時は通常メニュー。コスト最適。</p></div>
       <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-teal text-white flex items-center justify-center mb-4"><i class="fa-solid fa-globe"></i></div><div class="font-bold text-lg mb-1.5">多言語</div><p class="text-sm text-mute leading-relaxed">日本語/中国語。利用者ごとに記憶・切替。既定は日本語。</p></div>
-      <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-deep text-white flex items-center justify-center mb-4"><i class="fa-solid fa-clock"></i></div><div class="font-bold text-lg mb-1.5">自動リマインド</div><p class="text-sm text-mute leading-relaxed">開講1時間前に申込者へ自動通知（日時＋Zoom）。</p></div>
+      <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-deep text-white flex items-center justify-center mb-4"><i class="fa-solid fa-clock"></i></div><div class="font-bold text-lg mb-1.5">自動リマインド</div><p class="text-sm text-mute leading-relaxed">開講1時間前に申込者へ自動通知（日時＋Zoom）。微信・LINE 両チャネルへ自動振り分け配信。</p></div>
       <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-teal text-white flex items-center justify-center mb-4"><i class="fa-solid fa-clipboard-check"></i></div><div class="font-bold text-lg mb-1.5">成績・アンケート</div><p class="text-sm text-mute leading-relaxed">個人別に記録、講師がエクスポート。Webサイトで回答。</p></div>
+      <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-deep text-white flex items-center justify-center mb-4"><i class="fa-brands fa-line"></i></div><div class="font-bold text-lg mb-1.5">マルチチャネル（微信 + LINE）</div><p class="text-sm text-mute leading-relaxed">同一バックエンドを微信客服と LINE で共用。フロント（受信・署名・返信）だけを差し替える設計。</p></div>
+      <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-teal text-white flex items-center justify-center mb-4"><i class="fa-solid fa-link"></i></div><div class="font-bold text-lg mb-1.5">アカウント連携</div><p class="text-sm text-mute leading-relaxed">別プラットフォームの同一人物を「連携 ログインコード」で統合。重複登録を防ぎ、申込・提醒を一本化。</p></div>
     </div>
   </div>
 </section>
@@ -110,12 +113,13 @@ tailwind.config = { theme: { extend: {
     </div>
     <div class="grid md:grid-cols-3 gap-6">
       <div class="reveal rounded-2xl border border-slate-200 overflow-hidden">
-        <div class="bg-deep text-white p-5 font-bold text-lg"><i class="fa-solid fa-user-graduate mr-2"></i>受講者（微信）</div>
+        <div class="bg-deep text-white p-5 font-bold text-lg"><i class="fa-solid fa-user-graduate mr-2"></i>受講者（微信 / LINE）</div>
         <ul class="p-6 space-y-2.5 text-sm text-ink">
           <li class="flex gap-2"><i class="fa-solid fa-check text-teal mt-1"></i>言語選択 → 氏名登録</li>
           <li class="flex gap-2"><i class="fa-solid fa-check text-teal mt-1"></i>講座一覧・申込・キャンセル</li>
           <li class="flex gap-2"><i class="fa-solid fa-check text-teal mt-1"></i>次回講座 / Zoom 確認</li>
           <li class="flex gap-2"><i class="fa-solid fa-check text-teal mt-1"></i>ログインコード取得・AI問答</li>
+          <li class="flex gap-2"><i class="fa-solid fa-check text-teal mt-1"></i>微信⇄LINE アカウント連携（重複登録なし）</li>
         </ul>
       </div>
       <div class="reveal rounded-2xl border border-slate-200 overflow-hidden">
@@ -149,7 +153,7 @@ tailwind.config = { theme: { extend: {
       <p class="text-white/70 mt-3">固定サーバなし・従量課金・自動スケール。生成AIは日本リージョン内で完結（データ主権）。</p>
     </div>
     <div class="reveal flex flex-col md:flex-row items-stretch gap-3 mb-6">
-      <div class="flex-1 rounded-xl bg-navy2 border border-white/10 p-4 text-center"><i class="fa-solid fa-comments text-tealx text-xl mb-1"></i><div class="font-bold text-sm">微信 / 企業微信</div><div class="text-[11px] text-white/60">受講者・講師</div></div>
+      <div class="flex-1 rounded-xl bg-navy2 border border-white/10 p-4 text-center"><i class="fa-solid fa-comments text-tealx text-xl mb-1"></i><div class="font-bold text-sm">微信 / LINE / 企業微信</div><div class="text-[11px] text-white/60">受講者・講師（マルチチャネル）</div></div>
       <div class="flex items-center justify-center text-tealx"><i class="fa-solid fa-arrow-right rotate-90 md:rotate-0"></i></div>
       <div class="flex-1 rounded-xl bg-navy2 border border-white/10 p-4 text-center"><i class="fa-solid fa-shield-halved text-tealx text-xl mb-1"></i><div class="font-bold text-sm">中継 (Tailscale Funnel)</div><div class="text-[11px] text-white/60">可信IP</div></div>
       <div class="flex items-center justify-center text-tealx"><i class="fa-solid fa-arrow-right rotate-90 md:rotate-0"></i></div>
@@ -163,7 +167,7 @@ tailwind.config = { theme: { extend: {
       <div class="rounded-xl bg-navy2 border border-white/10 p-4 text-center"><i class="fa-solid fa-clock text-gold text-xl mb-1"></i><div class="font-bold text-sm">EventBridge → Reminder</div><div class="text-[11px] text-white/60">開講1時間前 自動通知</div></div>
     </div>
     <div class="reveal mt-6 text-sm text-white/70 leading-relaxed">
-      <span class="text-gold font-bold">設計の勘所：</span>微信客服の「可信IP」制約を固定IP中継（Tailscale Funnel）で解決／暗号(WXBizMsgCrypt)を純Python AESで自前実装し外部依存ゼロ／生成AIは日本境内 inference profile でデータを国外に出さない。
+      <span class="text-gold font-bold">設計の勘所：</span>微信客服の「可信IP」制約を固定IP中継（Tailscale Funnel）で解決／暗号(WXBizMsgCrypt)を純Python AESで自前実装し外部依存ゼロ／生成AIは日本境内 inference profile でデータを国外に出さない。<span class="text-tealx">ルーティング層をチャネル非依存に設計したため、LINE は署名検証のみ（中継・暗号なし）で同一バックエンドに接続でき、提醒は連携済みの全チャネルへ配信。</span>
     </div>
   </div>
 </section>
@@ -183,6 +187,7 @@ tailwind.config = { theme: { extend: {
       <span class="px-4 py-2 rounded-full bg-white border border-slate-200 text-sm font-medium">EventBridge</span>
       <span class="px-4 py-2 rounded-full bg-white border border-slate-200 text-sm font-medium">IaC: SAM / CDK</span>
       <span class="px-4 py-2 rounded-full bg-white border border-slate-200 text-sm font-medium">企業微信 客服API</span>
+      <span class="px-4 py-2 rounded-full bg-white border border-slate-200 text-sm font-medium"><i class="fa-brands fa-line text-green-500 mr-2"></i>LINE Messaging API</span>
       <span class="px-4 py-2 rounded-full bg-white border border-slate-200 text-sm font-medium">Tailscale Funnel</span>
     </div>
   </div>
