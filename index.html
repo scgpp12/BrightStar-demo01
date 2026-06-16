@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>受託開発ケイパビリティのご紹介 ｜ クラウド・生成AI・業務システム</title>
-<meta name="description" content="設計から構築・運用まで、クラウドネイティブなシステムを一気通貫で支援。AWS × Python、生成AI(Bedrock+自前RAG)、コンテナ/サーバーレス両構成に対応する受託開発のご紹介。" />
+<title>実績紹介 ｜ 受託開発ケイパビリティ（クラウド・生成AI・業務システム）</title>
+<meta name="description" content="クラウド（AWS）・生成AI・業務システムの受託開発実績と対応領域のご紹介。技術領域・案件タイプから絞り込んで事例をご覧いただけます。AWS × Python による設計から構築・運用まで一気通貫で支援します。" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -14,8 +14,8 @@
 tailwind.config = {
   theme: { extend: {
     colors: {
-      navy:'#0E2238', navy2:'#16314e', deep:'#0B5A82', teal:'#1390A6',
-      tealx:'#16b5cf', gold:'#E0A43B', ink:'#1B2733', mute:'#5E6B7A', mist:'#F4F7FB'
+      ink:'#10212E', sub:'#5A6B79', line:'#E5EBF0', mist:'#F5F8FB',
+      teal:'#0E9BB0', tealx:'#13B9D1', deep:'#0B5A82', navy:'#0E2238', gold:'#E0A43B'
     },
     fontFamily:{ jp:['"Noto Sans JP"','sans-serif'] }
   }}
@@ -24,351 +24,390 @@ tailwind.config = {
 <style>
   html{scroll-behavior:smooth}
   body{font-family:'Noto Sans JP',sans-serif}
-  .hero-grad{background:radial-gradient(1100px 600px at 80% -10%,rgba(19,144,166,.45),transparent),radial-gradient(900px 500px at 0% 110%,rgba(11,90,130,.5),transparent),linear-gradient(135deg,#0E2238 0%,#10324c 60%,#0b3a52 100%)}
-  .reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .5s ease}
   .reveal.in{opacity:1;transform:none}
-  .card-h{transition:transform .25s ease,box-shadow .25s ease}
-  .card-h:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(14,34,56,.16)}
-  .nav-link{position:relative}
-  .nav-link:hover{color:#0B5A82}
-  ::selection{background:#1390A6;color:#fff}
+  .case-card{transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
+  .case-card:hover{transform:translateY(-5px);box-shadow:0 16px 38px rgba(14,33,46,.12);border-color:#13B9D1}
+  .chip{transition:all .2s ease}
+  .filter-btn{transition:all .2s ease}
+  .filter-btn[aria-pressed="true"]{background:#0E9BB0;color:#fff;border-color:#0E9BB0}
+  ::selection{background:#0E9BB0;color:#fff}
 </style>
 </head>
 <body class="text-ink bg-white antialiased">
 
-<!-- ============ NAV ============ -->
-<header id="nav" class="fixed top-0 inset-x-0 z-50 transition-all duration-300">
+<!-- ============ HEADER ============ -->
+<header id="nav" class="sticky top-0 inset-x-0 z-50 bg-white/90 backdrop-blur border-b border-line">
   <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
-    <a href="#top" class="flex items-center gap-2 font-bold text-white" id="brand">
-      <span class="inline-flex w-9 h-9 rounded-xl bg-teal items-center justify-center text-white"><i class="fa-solid fa-layer-group"></i></span>
-      <span class="leading-tight">受託開発<span class="text-gold">.</span><span class="block text-[10px] font-medium tracking-widest opacity-70">CAPABILITY</span></span>
+    <a href="#top" class="flex items-center gap-2.5 font-bold text-ink">
+      <span class="inline-flex w-9 h-9 rounded-lg bg-teal items-center justify-center text-white"><i class="fa-solid fa-layer-group"></i></span>
+      <span class="leading-tight">BrightStar<span class="text-teal">.</span><span class="block text-[10px] font-medium tracking-[0.2em] text-sub">受託開発 CAPABILITY</span></span>
     </a>
-    <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-white/85" id="navlinks">
-      <a href="#value" class="nav-link hover:text-white">価値</a>
-      <a href="#build" class="nav-link hover:text-white">対応案件</a>
-      <a href="#arch" class="nav-link hover:text-white">構成</a>
-      <a href="#tech" class="nav-link hover:text-white">技術</a>
-      <a href="#cases" class="nav-link hover:text-white">実績</a>
-      <a href="#contact" class="ml-1 px-4 py-2 rounded-full bg-gold text-navy font-bold hover:brightness-105">ご相談</a>
+    <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-sub">
+      <a href="#cases" class="hover:text-teal">実績</a>
+      <a href="#value" class="hover:text-teal">価値</a>
+      <a href="#tech" class="hover:text-teal">技術</a>
+      <a href="#flow" class="hover:text-teal">進め方</a>
+      <a href="#contact" class="ml-1 px-4 py-2 rounded-full bg-teal text-white font-bold hover:bg-tealx">ご相談</a>
     </nav>
-    <button id="menuBtn" class="md:hidden text-white text-xl" aria-label="menu"><i class="fa-solid fa-bars"></i></button>
+    <button id="menuBtn" class="md:hidden text-ink text-xl" aria-label="menu"><i class="fa-solid fa-bars"></i></button>
   </div>
-  <div id="mobileMenu" class="md:hidden hidden bg-navy/95 backdrop-blur px-5 pb-4 text-white/90 text-sm">
-    <a href="#value" class="block py-2 border-b border-white/10">価値</a>
-    <a href="#build" class="block py-2 border-b border-white/10">対応案件</a>
-    <a href="#arch" class="block py-2 border-b border-white/10">構成</a>
-    <a href="#tech" class="block py-2 border-b border-white/10">技術</a>
-    <a href="#cases" class="block py-2 border-b border-white/10">実績</a>
-    <a href="#contact" class="block py-2 text-gold font-bold">ご相談</a>
+  <div id="mobileMenu" class="md:hidden hidden bg-white border-t border-line px-5 pb-4 text-sub text-sm">
+    <a href="#cases" class="block py-2 border-b border-line">実績</a>
+    <a href="#value" class="block py-2 border-b border-line">価値</a>
+    <a href="#tech" class="block py-2 border-b border-line">技術</a>
+    <a href="#flow" class="block py-2 border-b border-line">進め方</a>
+    <a href="#contact" class="block py-2 text-teal font-bold">ご相談</a>
   </div>
 </header>
 
 <!-- ============ HERO ============ -->
-<section id="top" class="hero-grad text-white pt-28 pb-24 md:pt-36 md:pb-32 relative overflow-hidden">
-  <div class="max-w-6xl mx-auto px-5 relative">
-    <p class="text-gold font-bold tracking-widest text-sm mb-4">クラウド・生成AI・業務システム 受託開発</p>
-    <h1 class="text-3xl md:text-5xl font-black leading-tight mb-6">
-      設計から構築・運用まで、<br class="hidden md:block">
-      <span class="text-tealx">クラウドネイティブ</span>を一気通貫で。
+<section id="top" class="bg-mist border-b border-line">
+  <div class="max-w-4xl mx-auto px-5 py-16 md:py-24 text-center">
+    <p class="text-teal font-bold tracking-[0.25em] text-xs md:text-sm mb-4">CASE STUDY ｜ 実績紹介</p>
+    <h1 class="text-3xl md:text-5xl font-black leading-tight mb-5">
+      クラウド・生成AI・業務システムの<br class="hidden md:block">
+      <span class="text-teal">受託開発</span>実績
     </h1>
-    <p class="text-white/80 text-base md:text-lg max-w-2xl leading-relaxed mb-9">
-      要件定義から実装・IaC・運用改善まで。AWS × Python の実装力で、SaaS・業務システム・生成AI 案件をセキュアかつ低コストにご支援します。
+    <p class="text-sub text-base md:text-lg leading-relaxed max-w-2xl mx-auto mb-8">
+      設計から構築・運用まで一気通貫。AWS × Python の実装力で手がけた事例と対応領域を、
+      技術・案件タイプから絞り込んでご覧いただけます。
     </p>
-    <div class="flex flex-wrap gap-3 mb-12">
-      <a href="#contact" class="px-6 py-3 rounded-full bg-gold text-navy font-bold hover:brightness-105 shadow-lg shadow-gold/20">無料でご相談する</a>
-      <a href="#cases" class="px-6 py-3 rounded-full border border-white/30 text-white font-bold hover:bg-white/10">実績を見る</a>
+    <div class="flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm">
+      <div class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-teal"></i><span>実務 約10年</span></div>
+      <div class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-teal"></i><span>AWS 認定 SAA 保有</span></div>
+      <div class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-teal"></i><span>コンテナ／サーバーレス両対応</span></div>
+      <div class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-teal"></i><span>生成AI（Bedrock＋自前RAG）</span></div>
     </div>
-    <div class="flex flex-wrap gap-3">
-      <span class="px-4 py-2 rounded-full bg-white/10 border border-white/15 text-sm"><i class="fa-solid fa-cloud text-tealx mr-2"></i>クラウド</span>
-      <span class="px-4 py-2 rounded-full bg-white/10 border border-white/15 text-sm"><i class="fa-solid fa-robot text-tealx mr-2"></i>生成AI</span>
-      <span class="px-4 py-2 rounded-full bg-white/10 border border-white/15 text-sm"><i class="fa-solid fa-cubes text-tealx mr-2"></i>業務システム</span>
+  </div>
+</section>
+
+<!-- ============ CASES (filterable grid) ============ -->
+<section id="cases" class="py-16 md:py-24 bg-white">
+  <div class="max-w-6xl mx-auto px-5">
+
+    <!-- Filters -->
+    <div class="mb-9 space-y-5">
+      <div>
+        <div class="text-xs font-bold tracking-wider text-sub mb-2.5"><i class="fa-solid fa-filter text-teal mr-1.5"></i>技術領域から絞り込む</div>
+        <div class="flex flex-wrap gap-2" data-group="tech">
+          <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="all" aria-pressed="true">すべて</button>
+          <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="aws" aria-pressed="false">AWS</button>
+          <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="genai" aria-pressed="false">生成AI・RAG</button>
+          <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="container" aria-pressed="false">コンテナ</button>
+          <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="serverless" aria-pressed="false">サーバーレス</button>
+          <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="python" aria-pressed="false">Python</button>
+          <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="cv" aria-pressed="false">画像解析</button>
+        </div>
+      </div>
+      <div>
+        <div class="text-xs font-bold tracking-wider text-sub mb-2.5"><i class="fa-solid fa-layer-group text-teal mr-1.5"></i>案件タイプから絞り込む</div>
+        <div class="flex flex-wrap gap-2" data-group="type">
+          <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="all" aria-pressed="true">すべて</button>
+          <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="saas" aria-pressed="false">SaaS</button>
+          <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="gyomu" aria-pressed="false">業務システム</button>
+          <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="api" aria-pressed="false">API基盤</button>
+          <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="ai" aria-pressed="false">AI活用</button>
+          <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="data" aria-pressed="false">移行・データ</button>
+        </div>
+      </div>
     </div>
+
+    <div class="flex items-baseline justify-between mb-5">
+      <h2 class="text-xl md:text-2xl font-black">事例・対応領域 <span id="count" class="text-sub text-sm font-medium ml-1"></span></h2>
+      <span class="text-xs text-sub"><span class="inline-block w-2 h-2 rounded-full bg-teal align-middle mr-1"></span>実績　<span class="inline-block w-2 h-2 rounded-full bg-line align-middle mr-1 ml-2"></span>対応領域</span>
+    </div>
+
+    <!-- Grid -->
+    <div id="grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <!-- 実績1 -->
+      <article class="case reveal case-card rounded-2xl border border-line overflow-hidden flex flex-col bg-white" data-tech="serverless genai aws python" data-type="saas ai gyomu" data-kind="jisseki">
+        <div class="h-32 bg-gradient-to-br from-deep to-teal flex items-center justify-center text-white text-4xl relative">
+          <i class="fa-solid fa-robot"></i>
+          <span class="absolute top-3 left-3 text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/90 text-deep">実績</span>
+        </div>
+        <div class="p-6 flex flex-col flex-1">
+          <div class="text-xs text-sub mb-1">社内研修DX ／ サーバーレス</div>
+          <h3 class="font-bold text-lg mb-2.5">BrightStar 研修アシスタント</h3>
+          <div class="flex flex-wrap gap-1.5 mb-3">
+            <span class="chip text-[11px] px-2 py-0.5 rounded bg-teal/10 text-teal">サーバーレス</span>
+            <span class="chip text-[11px] px-2 py-0.5 rounded bg-teal/10 text-teal">生成AI・RAG</span>
+            <span class="chip text-[11px] px-2 py-0.5 rounded bg-teal/10 text-teal">IaC</span>
+          </div>
+          <p class="text-sm text-sub leading-relaxed flex-1">微信で完結する社内研修DX。受講管理・AI問答・自動リマインドをフルスクラッチで開発。</p>
+          <div class="mt-4 pt-3 border-t border-line text-xs text-sub"><b class="text-ink">技術</b>　Lambda / DynamoDB / Bedrock / EventBridge</div>
+          <a href="brightstar.html" class="mt-3 inline-flex items-center gap-2 text-sm font-bold text-teal hover:gap-3 transition-all">事例の詳細を見る <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+
+      <!-- 実績2 -->
+      <article class="case reveal case-card rounded-2xl border border-line overflow-hidden flex flex-col bg-white" data-tech="container aws" data-type="gyomu" data-kind="jisseki">
+        <div class="h-32 bg-gradient-to-br from-navy to-deep flex items-center justify-center text-white text-4xl relative">
+          <i class="fa-solid fa-cubes"></i>
+          <span class="absolute top-3 left-3 text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/90 text-deep">実績</span>
+        </div>
+        <div class="p-6 flex flex-col flex-1">
+          <div class="text-xs text-sub mb-1">業務システム ／ コンテナ</div>
+          <h3 class="font-bold text-lg mb-2.5">コンテナWeb 業務システム</h3>
+          <div class="flex flex-wrap gap-1.5 mb-3">
+            <span class="chip text-[11px] px-2 py-0.5 rounded bg-teal/10 text-teal">コンテナ</span>
+            <span class="chip text-[11px] px-2 py-0.5 rounded bg-teal/10 text-teal">高可用</span>
+            <span class="chip text-[11px] px-2 py-0.5 rounded bg-teal/10 text-teal">IaC</span>
+          </div>
+          <p class="text-sm text-sub leading-relaxed flex-1">常時稼働の業務システムを高可用・無停止更新で構築。出勤・案件管理に対応。</p>
+          <div class="mt-4 pt-3 border-t border-line text-xs text-sub"><b class="text-ink">技術</b>　CloudFront / ALB / ECS Fargate / Aurora v2 / CDK</div>
+          <a href="containerweb.html" class="mt-3 inline-flex items-center gap-2 text-sm font-bold text-teal hover:gap-3 transition-all">事例の詳細を見る <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+
+      <!-- 実績3 -->
+      <article class="case reveal case-card rounded-2xl border border-line overflow-hidden flex flex-col bg-white" data-tech="cv python" data-type="ai" data-kind="jisseki">
+        <div class="h-32 bg-gradient-to-br from-teal to-tealx flex items-center justify-center text-white text-4xl relative">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <span class="absolute top-3 left-3 text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/90 text-deep">実績</span>
+        </div>
+        <div class="p-6 flex flex-col flex-1">
+          <div class="text-xs text-sub mb-1">画像解析 ／ AI</div>
+          <h3 class="font-bold text-lg mb-2.5">AI画像解析システム</h3>
+          <div class="flex flex-wrap gap-1.5 mb-3">
+            <span class="chip text-[11px] px-2 py-0.5 rounded bg-teal/10 text-teal">画像解析</span>
+            <span class="chip text-[11px] px-2 py-0.5 rounded bg-teal/10 text-teal">AI</span>
+          </div>
+          <p class="text-sm text-sub leading-relaxed flex-1">カメラ映像から受講者の集中度を解析する仕組みを実装。リアルタイム処理に対応。</p>
+          <div class="mt-4 pt-3 border-t border-line text-xs text-sub"><b class="text-ink">技術</b>　YOLOv8 / MediaPipe / OpenCV / Python</div>
+        </div>
+      </article>
+
+      <!-- 対応領域 -->
+      <article class="case reveal case-card rounded-2xl border border-line overflow-hidden flex flex-col bg-white" data-tech="aws container" data-type="saas" data-kind="taiou">
+        <div class="h-32 bg-mist flex items-center justify-center text-teal text-4xl relative border-b border-line">
+          <i class="fa-solid fa-cubes-stacked"></i>
+          <span class="absolute top-3 left-3 text-[10px] font-bold px-2 py-0.5 rounded-full bg-line text-sub">対応領域</span>
+        </div>
+        <div class="p-6 flex flex-col flex-1">
+          <div class="text-xs text-sub mb-1">対応領域 ／ SaaS</div>
+          <h3 class="font-bold text-lg mb-2.5">SaaS・Webサービス基盤</h3>
+          <div class="flex flex-wrap gap-1.5 mb-3">
+            <span class="chip text-[11px] px-2 py-0.5 rounded bg-slate-100 text-sub">マルチテナント</span>
+            <span class="chip text-[11px] px-2 py-0.5 rounded bg-slate-100 text-sub">従量課金</span>
+          </div>
+          <p class="text-sm text-sub leading-relaxed flex-1">マルチテナント型の製品バックエンド構築・運用。製品化／横展開を見据えた設計。</p>
+          <div class="mt-4 pt-3 border-t border-line text-xs text-sub"><b class="text-ink">技術</b>　ECS / Aurora / CloudFront / CDK</div>
+        </div>
+      </article>
+
+      <article class="case reveal case-card rounded-2xl border border-line overflow-hidden flex flex-col bg-white" data-tech="aws serverless" data-type="api" data-kind="taiou">
+        <div class="h-32 bg-mist flex items-center justify-center text-teal text-4xl relative border-b border-line">
+          <i class="fa-solid fa-sitemap"></i>
+          <span class="absolute top-3 left-3 text-[10px] font-bold px-2 py-0.5 rounded-full bg-line text-sub">対応領域</span>
+        </div>
+        <div class="p-6 flex flex-col flex-1">
+          <div class="text-xs text-sub mb-1">対応領域 ／ API基盤</div>
+          <h3 class="font-bold text-lg mb-2.5">API バックエンド</h3>
+          <div class="flex flex-wrap gap-1.5 mb-3">
+            <span class="chip text-[11px] px-2 py-0.5 rounded bg-slate-100 text-sub">REST / GraphQL</span>
+            <span class="chip text-[11px] px-2 py-0.5 rounded bg-slate-100 text-sub">モバイル／SPA</span>
+          </div>
+          <p class="text-sm text-sub leading-relaxed flex-1">モバイル／SPA 向けの REST・GraphQL API 基盤。イベント駆動・スパイクにも対応。</p>
+          <div class="mt-4 pt-3 border-t border-line text-xs text-sub"><b class="text-ink">技術</b>　API Gateway / Lambda / DynamoDB</div>
+        </div>
+      </article>
+
+      <article class="case reveal case-card rounded-2xl border border-line overflow-hidden flex flex-col bg-white" data-tech="aws container" data-type="gyomu" data-kind="taiou">
+        <div class="h-32 bg-mist flex items-center justify-center text-teal text-4xl relative border-b border-line">
+          <i class="fa-solid fa-briefcase"></i>
+          <span class="absolute top-3 left-3 text-[10px] font-bold px-2 py-0.5 rounded-full bg-line text-sub">対応領域</span>
+        </div>
+        <div class="p-6 flex flex-col flex-1">
+          <div class="text-xs text-sub mb-1">対応領域 ／ 業務システム</div>
+          <h3 class="font-bold text-lg mb-2.5">社内業務システム</h3>
+          <div class="flex flex-wrap gap-1.5 mb-3">
+            <span class="chip text-[11px] px-2 py-0.5 rounded bg-slate-100 text-sub">管理画面</span>
+            <span class="chip text-[11px] px-2 py-0.5 rounded bg-slate-100 text-sub">ワークフロー</span>
+          </div>
+          <p class="text-sm text-sub leading-relaxed flex-1">管理画面・ワークフロー等の基幹システム。運用の自動化まで一貫対応。</p>
+          <div class="mt-4 pt-3 border-t border-line text-xs text-sub"><b class="text-ink">技術</b>　ECS / RDS / Cognito / CDK</div>
+        </div>
+      </article>
+
+      <article class="case reveal case-card rounded-2xl border border-line overflow-hidden flex flex-col bg-white" data-tech="genai python serverless" data-type="ai" data-kind="taiou">
+        <div class="h-32 bg-mist flex items-center justify-center text-teal text-4xl relative border-b border-line">
+          <i class="fa-solid fa-comments"></i>
+          <span class="absolute top-3 left-3 text-[10px] font-bold px-2 py-0.5 rounded-full bg-line text-sub">対応領域</span>
+        </div>
+        <div class="p-6 flex flex-col flex-1">
+          <div class="text-xs text-sub mb-1">対応領域 ／ AI活用</div>
+          <h3 class="font-bold text-lg mb-2.5">生成AI・RAG・チャットボット</h3>
+          <div class="flex flex-wrap gap-1.5 mb-3">
+            <span class="chip text-[11px] px-2 py-0.5 rounded bg-slate-100 text-sub">ナレッジ検索</span>
+            <span class="chip text-[11px] px-2 py-0.5 rounded bg-slate-100 text-sub">問合せ自動化</span>
+          </div>
+          <p class="text-sm text-sub leading-relaxed flex-1">日本リージョン内 Bedrock＋自前RAG で、低コスト・データを国外に出さない構成。</p>
+          <div class="mt-4 pt-3 border-t border-line text-xs text-sub"><b class="text-ink">技術</b>　Bedrock / 埋め込み＋近傍探索 / Lambda</div>
+        </div>
+      </article>
+
+      <article class="case reveal case-card rounded-2xl border border-line overflow-hidden flex flex-col bg-white" data-tech="serverless python" data-type="api" data-kind="taiou">
+        <div class="h-32 bg-mist flex items-center justify-center text-teal text-4xl relative border-b border-line">
+          <i class="fa-solid fa-right-left"></i>
+          <span class="absolute top-3 left-3 text-[10px] font-bold px-2 py-0.5 rounded-full bg-line text-sub">対応領域</span>
+        </div>
+        <div class="p-6 flex flex-col flex-1">
+          <div class="text-xs text-sub mb-1">対応領域 ／ 連携</div>
+          <h3 class="font-bold text-lg mb-2.5">メッセージング連携Bot</h3>
+          <div class="flex flex-wrap gap-1.5 mb-3">
+            <span class="chip text-[11px] px-2 py-0.5 rounded bg-slate-100 text-sub">LINE / Slack</span>
+            <span class="chip text-[11px] px-2 py-0.5 rounded bg-slate-100 text-sub">企業微信 / Teams</span>
+          </div>
+          <p class="text-sm text-sub leading-relaxed flex-1">各メッセージング基盤と連携する業務Bot。通知・申請・問合せを自動化。</p>
+          <div class="mt-4 pt-3 border-t border-line text-xs text-sub"><b class="text-ink">技術</b>　Webhook / Lambda / API Gateway</div>
+        </div>
+      </article>
+
+      <article class="case reveal case-card rounded-2xl border border-line overflow-hidden flex flex-col bg-white" data-tech="aws python" data-type="data" data-kind="taiou">
+        <div class="h-32 bg-mist flex items-center justify-center text-teal text-4xl relative border-b border-line">
+          <i class="fa-solid fa-database"></i>
+          <span class="absolute top-3 left-3 text-[10px] font-bold px-2 py-0.5 rounded-full bg-line text-sub">対応領域</span>
+        </div>
+        <div class="p-6 flex flex-col flex-1">
+          <div class="text-xs text-sub mb-1">対応領域 ／ 移行・データ</div>
+          <h3 class="font-bold text-lg mb-2.5">クラウド移行・データ基盤</h3>
+          <div class="flex flex-wrap gap-1.5 mb-3">
+            <span class="chip text-[11px] px-2 py-0.5 rounded bg-slate-100 text-sub">コンテナ化</span>
+            <span class="chip text-[11px] px-2 py-0.5 rounded bg-slate-100 text-sub">バッチ／集計</span>
+          </div>
+          <p class="text-sm text-sub leading-relaxed flex-1">既存システムのコンテナ化・AWS移行と、バッチ／集計／データ連携基盤の構築。</p>
+          <div class="mt-4 pt-3 border-t border-line text-xs text-sub"><b class="text-ink">技術</b>　ECS / Glue / S3 / Step Functions</div>
+        </div>
+      </article>
+
+    </div>
+    <p id="empty" class="hidden text-center text-sub py-16">該当する事例がありません。フィルタを変更してください。</p>
   </div>
 </section>
 
 <!-- ============ VALUE ============ -->
-<section id="value" class="py-20 md:py-28 bg-white">
+<section id="value" class="py-16 md:py-24 bg-mist border-y border-line">
   <div class="max-w-6xl mx-auto px-5">
-    <div class="reveal mb-12">
-      <p class="text-teal font-bold tracking-widest text-sm mb-2">OUR VALUE</p>
+    <div class="reveal mb-10 text-center">
+      <p class="text-teal font-bold tracking-[0.2em] text-xs mb-2">OUR VALUE</p>
       <h2 class="text-2xl md:text-4xl font-black">私たちが提供できる価値</h2>
-      <p class="text-mute mt-3 max-w-2xl">要件定義・設計から構築・運用改善まで、クラウドネイティブなシステムを一気通貫でご提供します。</p>
+      <p class="text-sub mt-3 max-w-2xl mx-auto">要件定義・設計から構築・運用改善まで、クラウドネイティブなシステムを一気通貫でご提供します。</p>
     </div>
     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-      <div class="reveal card-h bg-mist rounded-2xl p-7 border border-slate-100">
+      <div class="reveal bg-white rounded-2xl p-7 border border-line">
         <div class="w-12 h-12 rounded-xl bg-deep text-white flex items-center justify-center mb-5"><i class="fa-solid fa-cloud text-lg"></i></div>
-        <div class="text-deep font-bold text-lg mb-2">クラウド設計力</div>
-        <p class="text-sm text-mute leading-relaxed">AWSベストプラクティスに沿った、拡張性・可用性の高いアーキテクチャ設計。</p>
+        <div class="text-ink font-bold text-lg mb-2">クラウド設計力</div>
+        <p class="text-sm text-sub leading-relaxed">AWSベストプラクティスに沿った、拡張性・可用性の高いアーキテクチャ設計。</p>
       </div>
-      <div class="reveal card-h bg-mist rounded-2xl p-7 border border-slate-100">
+      <div class="reveal bg-white rounded-2xl p-7 border border-line">
         <div class="w-12 h-12 rounded-xl bg-teal text-white flex items-center justify-center mb-5"><i class="fa-solid fa-robot text-lg"></i></div>
-        <div class="text-deep font-bold text-lg mb-2">生成AI活用力</div>
-        <p class="text-sm text-mute leading-relaxed">Bedrock＋自前RAGで、業務に生成AIを低コストに組み込む実装力。</p>
+        <div class="text-ink font-bold text-lg mb-2">生成AI活用力</div>
+        <p class="text-sm text-sub leading-relaxed">Bedrock＋自前RAGで、業務に生成AIを低コストに組み込む実装力。</p>
       </div>
-      <div class="reveal card-h bg-mist rounded-2xl p-7 border border-slate-100">
+      <div class="reveal bg-white rounded-2xl p-7 border border-line">
         <div class="w-12 h-12 rounded-xl bg-deep text-white flex items-center justify-center mb-5"><i class="fa-solid fa-code text-lg"></i></div>
-        <div class="text-deep font-bold text-lg mb-2">IaC 自動化</div>
-        <p class="text-sm text-mute leading-relaxed">CDK（TypeScript）／SAMでインフラをコード化し、再現性を確保。</p>
+        <div class="text-ink font-bold text-lg mb-2">IaC 自動化</div>
+        <p class="text-sm text-sub leading-relaxed">CDK（TypeScript）／SAMでインフラをコード化し、再現性を確保。</p>
       </div>
-      <div class="reveal card-h bg-mist rounded-2xl p-7 border border-slate-100">
+      <div class="reveal bg-white rounded-2xl p-7 border border-line">
         <div class="w-12 h-12 rounded-xl bg-teal text-white flex items-center justify-center mb-5"><i class="fa-solid fa-shield-halved text-lg"></i></div>
-        <div class="text-deep font-bold text-lg mb-2">堅牢 &amp; 低コスト</div>
-        <p class="text-sm text-mute leading-relaxed">最小権限・サーバーレスで、セキュアかつ無駄のないコスト構造に。</p>
+        <div class="text-ink font-bold text-lg mb-2">堅牢 &amp; 低コスト</div>
+        <p class="text-sm text-sub leading-relaxed">最小権限・サーバーレスで、セキュアかつ無駄のないコスト構造に。</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============ WHAT WE CAN BUILD ============ -->
-<section id="build" class="py-20 md:py-28 bg-mist">
+<!-- ============ TECH ============ -->
+<section id="tech" class="py-16 md:py-24 bg-white">
   <div class="max-w-6xl mx-auto px-5">
-    <div class="reveal mb-12">
-      <p class="text-teal font-bold tracking-widest text-sm mb-2">WHAT WE CAN BUILD</p>
-      <h2 class="text-2xl md:text-4xl font-black">対応可能な案件タイプ</h2>
-      <p class="text-mute mt-3">幅広いWeb・業務システム・生成AI案件に対応できます。</p>
-    </div>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-      <div class="reveal card-h bg-white rounded-2xl p-7 border border-slate-100">
-        <i class="fa-solid fa-cubes text-2xl text-teal mb-4"></i>
-        <div class="font-bold text-lg mb-1.5">SaaS・Webサービス基盤</div>
-        <p class="text-sm text-mute leading-relaxed">マルチテナント型の製品バックエンド構築・運用</p>
-      </div>
-      <div class="reveal card-h bg-white rounded-2xl p-7 border border-slate-100">
-        <i class="fa-solid fa-sitemap text-2xl text-teal mb-4"></i>
-        <div class="font-bold text-lg mb-1.5">API バックエンド</div>
-        <p class="text-sm text-mute leading-relaxed">モバイル／SPA向けの REST・GraphQL API 基盤</p>
-      </div>
-      <div class="reveal card-h bg-white rounded-2xl p-7 border border-slate-100">
-        <i class="fa-solid fa-briefcase text-2xl text-teal mb-4"></i>
-        <div class="font-bold text-lg mb-1.5">社内業務システム</div>
-        <p class="text-sm text-mute leading-relaxed">管理画面・ワークフロー等の基幹システム</p>
-      </div>
-      <div class="reveal card-h bg-white rounded-2xl p-7 border border-slate-100">
-        <i class="fa-solid fa-robot text-2xl text-teal mb-4"></i>
-        <div class="font-bold text-lg mb-1.5">生成AI・RAG・チャットボット</div>
-        <p class="text-sm text-mute leading-relaxed">ナレッジ検索・問合せ自動化・業務自動化</p>
-      </div>
-      <div class="reveal card-h bg-white rounded-2xl p-7 border border-slate-100">
-        <i class="fa-solid fa-comments text-2xl text-teal mb-4"></i>
-        <div class="font-bold text-lg mb-1.5">メッセージング連携</div>
-        <p class="text-sm text-mute leading-relaxed">微信／企業微信・LINE・Slack・Teams 業務Bot</p>
-      </div>
-      <div class="reveal card-h bg-white rounded-2xl p-7 border border-slate-100">
-        <i class="fa-solid fa-right-left text-2xl text-teal mb-4"></i>
-        <div class="font-bold text-lg mb-1.5">クラウド移行・データ基盤</div>
-        <p class="text-sm text-mute leading-relaxed">コンテナ化・AWS移行・バッチ／集計／連携</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ ARCHITECTURE ============ -->
-<section id="arch" class="py-20 md:py-28 bg-white">
-  <div class="max-w-6xl mx-auto px-5">
-    <div class="reveal mb-12">
-      <p class="text-teal font-bold tracking-widest text-sm mb-2">ARCHITECTURE</p>
-      <h2 class="text-2xl md:text-4xl font-black">コンテナ × サーバーレス、両構成に対応</h2>
-      <p class="text-mute mt-3 max-w-3xl">案件特性に応じて最適なアーキテクチャを選定・ご提案します。両構成の知見を有しています。</p>
-    </div>
-    <div class="grid md:grid-cols-2 gap-6">
-      <div class="reveal rounded-2xl border border-slate-200 overflow-hidden">
-        <div class="bg-navy text-white p-6 flex items-center gap-3"><i class="fa-solid fa-cubes text-gold text-xl"></i><div><div class="font-bold text-lg">コンテナ構成</div><div class="text-white/70 text-sm">CloudFront ＋ ALB ＋ ECS Fargate ＋ Aurora</div></div></div>
-        <ul class="p-6 space-y-3 text-sm">
-          <li class="flex gap-3"><i class="fa-solid fa-circle-check text-teal mt-1"></i><span>安定した負荷の Web・業務システム</span></li>
-          <li class="flex gap-3"><i class="fa-solid fa-circle-check text-teal mt-1"></i><span>長時間処理・WebSocket・常時稼働</span></li>
-          <li class="flex gap-3"><i class="fa-solid fa-circle-check text-teal mt-1"></i><span>リレーショナルデータ・複雑なクエリ</span></li>
-        </ul>
-      </div>
-      <div class="reveal rounded-2xl border border-slate-200 overflow-hidden">
-        <div class="bg-deep text-white p-6 flex items-center gap-3"><i class="fa-solid fa-bolt text-gold text-xl"></i><div><div class="font-bold text-lg">サーバーレス構成</div><div class="text-white/70 text-sm">API Gateway ＋ Lambda ＋ DynamoDB ＋ Bedrock</div></div></div>
-        <ul class="p-6 space-y-3 text-sm">
-          <li class="flex gap-3"><i class="fa-solid fa-circle-check text-teal mt-1"></i><span>変動の大きいAPI・軽量サービス</span></li>
-          <li class="flex gap-3"><i class="fa-solid fa-circle-check text-teal mt-1"></i><span>イベント駆動・スパイク的なアクセス</span></li>
-          <li class="flex gap-3"><i class="fa-solid fa-circle-check text-teal mt-1"></i><span>生成AI・運用レス・極小コストで開始</span></li>
-        </ul>
-      </div>
-    </div>
-    <div class="reveal mt-6 rounded-xl bg-mist border border-slate-100 p-5 text-sm text-ink">
-      <span class="font-bold text-deep">選定の考え方：</span>処理時間・常時接続の有無・データモデル（RDB／NoSQL）・トラフィック特性から、最適解をご提案します。
-    </div>
-  </div>
-</section>
-
-<!-- ============ TECH (AWS / Python) ============ -->
-<section id="tech" class="py-20 md:py-28 bg-navy text-white">
-  <div class="max-w-6xl mx-auto px-5">
-    <div class="reveal mb-12">
-      <p class="text-gold font-bold tracking-widest text-sm mb-2">TECH CAPABILITY</p>
+    <div class="reveal mb-10 text-center">
+      <p class="text-teal font-bold tracking-[0.2em] text-xs mb-2">TECH CAPABILITY</p>
       <h2 class="text-2xl md:text-4xl font-black">AWS × Python の実装力</h2>
-      <p class="text-white/70 mt-3">マネージドサービスとPythonで、セキュアで低コストな基盤を構築します。</p>
+      <p class="text-sub mt-3 max-w-2xl mx-auto">マネージドサービスとPythonで、セキュアで低コストな基盤を構築します。</p>
     </div>
     <div class="grid md:grid-cols-2 gap-6">
-      <!-- AWS -->
-      <div class="reveal rounded-2xl bg-navy2 border border-white/10 p-7">
-        <div class="flex items-center justify-between mb-5">
-          <div class="flex items-center gap-3"><i class="fa-brands fa-aws text-2xl text-gold"></i><span class="font-bold text-xl">AWS でできること</span></div>
-          <span class="text-[11px] px-2.5 py-1 rounded-full bg-gold/15 text-gold border border-gold/30">認定 SAA 保有</span>
+      <div class="reveal rounded-2xl border border-line overflow-hidden">
+        <div class="bg-mist border-b border-line px-7 py-4 flex items-center justify-between">
+          <div class="flex items-center gap-3"><i class="fa-brands fa-aws text-2xl text-deep"></i><span class="font-bold text-lg">AWS でできること</span></div>
+          <span class="text-[11px] px-2.5 py-1 rounded-full bg-deep/10 text-deep border border-deep/20">認定 SAA 保有</span>
         </div>
-        <ul class="space-y-3 text-sm text-white/85">
-          <li class="flex gap-3"><i class="fa-solid fa-sitemap text-tealx mt-1 w-4"></i><span><b>ネットワーク設計</b>　VPC・サブネット分離・SG・ルーティング</span></li>
-          <li class="flex gap-3"><i class="fa-solid fa-cubes text-tealx mt-1 w-4"></i><span><b>コンテナ基盤</b>　ECS / Fargate / ECR</span></li>
-          <li class="flex gap-3"><i class="fa-solid fa-database text-tealx mt-1 w-4"></i><span><b>データベース</b>　Aurora / RDS / DynamoDB</span></li>
-          <li class="flex gap-3"><i class="fa-solid fa-bolt text-tealx mt-1 w-4"></i><span><b>サーバーレス</b>　Lambda / API Gateway</span></li>
-          <li class="flex gap-3"><i class="fa-solid fa-robot text-tealx mt-1 w-4"></i><span><b>生成AI</b>　Bedrock・日本リージョン・自前RAG</span></li>
-          <li class="flex gap-3"><i class="fa-solid fa-code text-tealx mt-1 w-4"></i><span><b>IaC・自動化</b>　CDK / SAM / CloudFormation</span></li>
-          <li class="flex gap-3"><i class="fa-solid fa-shield-halved text-tealx mt-1 w-4"></i><span><b>セキュリティ／監視</b>　IAM最小権限・Secrets Manager・WAF・CloudWatch</span></li>
+        <ul class="p-7 space-y-3 text-sm text-ink">
+          <li class="flex gap-3"><i class="fa-solid fa-sitemap text-teal mt-1 w-4"></i><span><b>ネットワーク設計</b>　VPC・サブネット分離・SG・ルーティング</span></li>
+          <li class="flex gap-3"><i class="fa-solid fa-cubes text-teal mt-1 w-4"></i><span><b>コンテナ基盤</b>　ECS / Fargate / ECR</span></li>
+          <li class="flex gap-3"><i class="fa-solid fa-database text-teal mt-1 w-4"></i><span><b>データベース</b>　Aurora / RDS / DynamoDB</span></li>
+          <li class="flex gap-3"><i class="fa-solid fa-bolt text-teal mt-1 w-4"></i><span><b>サーバーレス</b>　Lambda / API Gateway</span></li>
+          <li class="flex gap-3"><i class="fa-solid fa-robot text-teal mt-1 w-4"></i><span><b>生成AI</b>　Bedrock・日本リージョン・自前RAG</span></li>
+          <li class="flex gap-3"><i class="fa-solid fa-code text-teal mt-1 w-4"></i><span><b>IaC・自動化</b>　CDK / SAM / CloudFormation</span></li>
+          <li class="flex gap-3"><i class="fa-solid fa-shield-halved text-teal mt-1 w-4"></i><span><b>セキュリティ／監視</b>　IAM最小権限・Secrets Manager・WAF・CloudWatch</span></li>
         </ul>
       </div>
-      <!-- Python -->
-      <div class="reveal rounded-2xl bg-navy2 border border-white/10 p-7">
-        <div class="flex items-center justify-between mb-5">
-          <div class="flex items-center gap-3"><i class="fa-brands fa-python text-2xl text-tealx"></i><span class="font-bold text-xl">Python でできること</span></div>
-          <span class="text-[11px] px-2.5 py-1 rounded-full bg-tealx/15 text-tealx border border-tealx/30">実務 約10年</span>
+      <div class="reveal rounded-2xl border border-line overflow-hidden">
+        <div class="bg-mist border-b border-line px-7 py-4 flex items-center justify-between">
+          <div class="flex items-center gap-3"><i class="fa-brands fa-python text-2xl text-teal"></i><span class="font-bold text-lg">Python でできること</span></div>
+          <span class="text-[11px] px-2.5 py-1 rounded-full bg-teal/10 text-teal border border-teal/20">実務 約10年</span>
         </div>
-        <ul class="space-y-3 text-sm text-white/85">
-          <li class="flex gap-3"><i class="fa-solid fa-server text-gold mt-1 w-4"></i><span><b>Web / API 開発</b>　FastAPI / Flask</span></li>
-          <li class="flex gap-3"><i class="fa-solid fa-database text-gold mt-1 w-4"></i><span><b>DB 連携</b>　SQLAlchemy / psycopg</span></li>
-          <li class="flex gap-3"><i class="fa-solid fa-bolt text-gold mt-1 w-4"></i><span><b>サーバーレス関数</b>　Lambda 上の業務ロジック</span></li>
-          <li class="flex gap-3"><i class="fa-solid fa-robot text-gold mt-1 w-4"></i><span><b>生成AI連携・自前RAG</b>　埋め込み＋近傍探索でコスト最適</span></li>
-          <li class="flex gap-3"><i class="fa-solid fa-arrows-rotate text-gold mt-1 w-4"></i><span><b>データ処理・自動化</b>　バッチ・ETL・運用自動化</span></li>
-          <li class="flex gap-3"><i class="fa-solid fa-lock text-gold mt-1 w-4"></i><span><b>認証・認可</b>　Cognito / JWT</span></li>
-          <li class="flex gap-3"><i class="fa-solid fa-circle-check text-gold mt-1 w-4"></i><span><b>品質</b>　型ヒント・自動テスト・コンテナ化前提</span></li>
+        <ul class="p-7 space-y-3 text-sm text-ink">
+          <li class="flex gap-3"><i class="fa-solid fa-server text-deep mt-1 w-4"></i><span><b>Web / API 開発</b>　FastAPI / Flask</span></li>
+          <li class="flex gap-3"><i class="fa-solid fa-database text-deep mt-1 w-4"></i><span><b>DB 連携</b>　SQLAlchemy / psycopg</span></li>
+          <li class="flex gap-3"><i class="fa-solid fa-bolt text-deep mt-1 w-4"></i><span><b>サーバーレス関数</b>　Lambda 上の業務ロジック</span></li>
+          <li class="flex gap-3"><i class="fa-solid fa-robot text-deep mt-1 w-4"></i><span><b>生成AI連携・自前RAG</b>　埋め込み＋近傍探索でコスト最適</span></li>
+          <li class="flex gap-3"><i class="fa-solid fa-arrows-rotate text-deep mt-1 w-4"></i><span><b>データ処理・自動化</b>　バッチ・ETL・運用自動化</span></li>
+          <li class="flex gap-3"><i class="fa-solid fa-lock text-deep mt-1 w-4"></i><span><b>認証・認可</b>　Cognito / JWT</span></li>
+          <li class="flex gap-3"><i class="fa-solid fa-circle-check text-deep mt-1 w-4"></i><span><b>品質</b>　型ヒント・自動テスト・コンテナ化前提</span></li>
         </ul>
       </div>
+    </div>
+    <div class="reveal mt-6 rounded-xl bg-mist border border-line p-5 text-sm text-ink">
+      <span class="font-bold text-teal">構成の選定：</span>処理時間・常時接続の有無・データモデル（RDB／NoSQL）・トラフィック特性から、コンテナ／サーバーレスの最適解をご提案します。
     </div>
   </div>
 </section>
 
-<!-- ============ PROBLEM -> SOLUTION ============ -->
-<section class="py-20 md:py-28 bg-white">
+<!-- ============ FLOW / PROBLEM ============ -->
+<section id="flow" class="py-16 md:py-24 bg-mist border-y border-line">
   <div class="max-w-5xl mx-auto px-5">
-    <div class="reveal mb-12">
-      <p class="text-teal font-bold tracking-widest text-sm mb-2">PROBLEM → SOLUTION</p>
+    <div class="reveal mb-10 text-center">
+      <p class="text-teal font-bold tracking-[0.2em] text-xs mb-2">PROBLEM → SOLUTION</p>
       <h2 class="text-2xl md:text-4xl font-black">お客様の課題と、解決アプローチ</h2>
     </div>
-    <div class="space-y-4">
-      <div class="reveal card-h grid md:grid-cols-[1fr_auto_1.3fr] items-center gap-4 bg-mist rounded-2xl p-5 border border-slate-100">
+    <div class="space-y-3.5">
+      <div class="reveal grid md:grid-cols-[1fr_auto_1.3fr] items-center gap-4 bg-white rounded-xl p-5 border border-line">
         <div class="font-bold flex items-center gap-3"><i class="fa-solid fa-triangle-exclamation text-gold"></i>アクセス急増に耐えられない</div>
         <i class="fa-solid fa-arrow-right text-teal hidden md:block"></i>
-        <div class="text-sm text-mute">Fargate／Aurora Serverless v2 の自動スケールで需要に追従</div>
+        <div class="text-sm text-sub">Fargate／Aurora Serverless v2 の自動スケールで需要に追従</div>
       </div>
-      <div class="reveal card-h grid md:grid-cols-[1fr_auto_1.3fr] items-center gap-4 bg-mist rounded-2xl p-5 border border-slate-100">
+      <div class="reveal grid md:grid-cols-[1fr_auto_1.3fr] items-center gap-4 bg-white rounded-xl p-5 border border-line">
         <div class="font-bold flex items-center gap-3"><i class="fa-solid fa-triangle-exclamation text-gold"></i>インフラコストが高い・読めない</div>
         <i class="fa-solid fa-arrow-right text-teal hidden md:block"></i>
-        <div class="text-sm text-mute">サーバーレス＋従量課金、アイドル時は自動停止で無駄を削減</div>
+        <div class="text-sm text-sub">サーバーレス＋従量課金、アイドル時は自動停止で無駄を削減</div>
       </div>
-      <div class="reveal card-h grid md:grid-cols-[1fr_auto_1.3fr] items-center gap-4 bg-mist rounded-2xl p-5 border border-slate-100">
+      <div class="reveal grid md:grid-cols-[1fr_auto_1.3fr] items-center gap-4 bg-white rounded-xl p-5 border border-line">
         <div class="font-bold flex items-center gap-3"><i class="fa-solid fa-triangle-exclamation text-gold"></i>セキュリティに不安がある</div>
         <i class="fa-solid fa-arrow-right text-teal hidden md:block"></i>
-        <div class="text-sm text-mute">ネットワーク分離・最小権限IAM・Secrets Manager で堅牢化</div>
+        <div class="text-sm text-sub">ネットワーク分離・最小権限IAM・Secrets Manager で堅牢化</div>
       </div>
-      <div class="reveal card-h grid md:grid-cols-[1fr_auto_1.3fr] items-center gap-4 bg-mist rounded-2xl p-5 border border-slate-100">
-        <div class="font-bold flex items-center gap-3"><i class="fa-solid fa-triangle-exclamation text-gold"></i>構築／運用が属人化している</div>
-        <i class="fa-solid fa-arrow-right text-teal hidden md:block"></i>
-        <div class="text-sm text-mute">AWS CDK でコード化し、誰でも再現・変更影響を事前確認</div>
-      </div>
-      <div class="reveal card-h grid md:grid-cols-[1fr_auto_1.3fr] items-center gap-4 bg-mist rounded-2xl p-5 border border-slate-100">
+      <div class="reveal grid md:grid-cols-[1fr_auto_1.3fr] items-center gap-4 bg-white rounded-xl p-5 border border-line">
         <div class="font-bold flex items-center gap-3"><i class="fa-solid fa-triangle-exclamation text-gold"></i>生成AIを使いたいがコスト・主権が心配</div>
         <i class="fa-solid fa-arrow-right text-teal hidden md:block"></i>
-        <div class="text-sm text-mute">日本リージョン内 Bedrock＋自前RAG で低コスト・国外に出さない</div>
+        <div class="text-sm text-sub">日本リージョン内 Bedrock＋自前RAG で低コスト・国外に出さない</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============ SAAS-READY ============ -->
-<section class="py-20 md:py-28 bg-mist">
-  <div class="max-w-6xl mx-auto px-5">
-    <div class="reveal mb-12">
-      <p class="text-teal font-bold tracking-widest text-sm mb-2">SAAS-READY</p>
-      <h2 class="text-2xl md:text-4xl font-black">SaaS プロダクト開発の知見</h2>
-      <p class="text-mute mt-3 max-w-2xl">製品化・横展開を見据えた設計。単一組織のデモから本番SaaSへ拡張できます。</p>
-    </div>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-      <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><i class="fa-solid fa-cubes text-teal text-xl mb-3"></i><div class="font-bold mb-1">マルチテナント拡張</div><p class="text-sm text-mute">識別子設計とデータ分離で複数組織へ展開</p></div>
-      <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><i class="fa-solid fa-coins text-teal text-xl mb-3"></i><div class="font-bold mb-1">従量課金モデル</div><p class="text-sm text-mute">利用量に比例＝SaaS原価管理に好相性</p></div>
-      <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><i class="fa-solid fa-code text-teal text-xl mb-3"></i><div class="font-bold mb-1">環境複製（IaC）</div><p class="text-sm text-mute">SAM／CDKでステージ・顧客ごとに即複製</p></div>
-      <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><i class="fa-solid fa-arrows-rotate text-teal text-xl mb-3"></i><div class="font-bold mb-1">運用の自動化</div><p class="text-sm text-mute">リマインド・集計・通知をマネージドで自動化</p></div>
-      <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><i class="fa-solid fa-globe text-teal text-xl mb-3"></i><div class="font-bold mb-1">多言語UI標準</div><p class="text-sm text-mute">海外展開を見据えた i18n 設計</p></div>
-      <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><i class="fa-solid fa-briefcase text-teal text-xl mb-3"></i><div class="font-bold mb-1">ドキュメント納品</div><p class="text-sm text-mute">設計／運用／利用マニュアルまで整備</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ CASE STUDIES ============ -->
-<section id="cases" class="py-20 md:py-28 bg-white">
-  <div class="max-w-6xl mx-auto px-5">
-    <div class="reveal mb-12">
-      <p class="text-teal font-bold tracking-widest text-sm mb-2">CASE STUDIES</p>
-      <h2 class="text-2xl md:text-4xl font-black">実績・参考プロジェクト</h2>
-      <p class="text-mute mt-3">これまでに手がけた受託開発・実装の事例です。</p>
-    </div>
-    <div class="grid md:grid-cols-3 gap-6">
-      <div class="reveal card-h rounded-2xl border border-slate-200 overflow-hidden flex flex-col">
-        <div class="h-28 bg-gradient-to-br from-deep to-teal flex items-center justify-center text-white text-3xl"><i class="fa-solid fa-robot"></i></div>
-        <div class="p-6 flex flex-col flex-1">
-          <div class="font-bold text-lg mb-2">BrightStar 研修アシスタント</div>
-          <div class="flex flex-wrap gap-1.5 mb-3">
-            <span class="text-[11px] px-2 py-0.5 rounded bg-deep/10 text-deep">サーバーレス</span>
-            <span class="text-[11px] px-2 py-0.5 rounded bg-deep/10 text-deep">生成AI・RAG</span>
-            <span class="text-[11px] px-2 py-0.5 rounded bg-deep/10 text-deep">IaC</span>
-          </div>
-          <p class="text-sm text-mute leading-relaxed flex-1">微信で完結する社内研修DX。受講管理・AI問答・自動リマインドをフルスクラッチ開発。</p>
-          <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-mute"><b class="text-ink">技術</b>　Lambda / DynamoDB / Bedrock / EventBridge</div>
-          <a href="brightstar.html" class="mt-4 inline-flex items-center gap-2 text-sm font-bold text-deep hover:gap-3 transition-all">詳細・ドキュメントを見る <i class="fa-solid fa-arrow-right"></i></a>
-        </div>
-      </div>
-      <div class="reveal card-h rounded-2xl border border-slate-200 overflow-hidden flex flex-col">
-        <div class="h-28 bg-gradient-to-br from-navy to-deep flex items-center justify-center text-white text-3xl"><i class="fa-solid fa-cubes"></i></div>
-        <div class="p-6 flex flex-col flex-1">
-          <div class="font-bold text-lg mb-2">コンテナWeb 業務システム</div>
-          <div class="flex flex-wrap gap-1.5 mb-3">
-            <span class="text-[11px] px-2 py-0.5 rounded bg-teal/10 text-teal">コンテナ</span>
-            <span class="text-[11px] px-2 py-0.5 rounded bg-teal/10 text-teal">高可用</span>
-          </div>
-          <p class="text-sm text-mute leading-relaxed flex-1">常時稼働の業務システムを、高可用・無停止更新で構築。出勤・案件管理に対応。</p>
-          <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-mute"><b class="text-ink">技術</b>　CloudFront / ALB / ECS Fargate / Aurora v2 / CDK</div>
-          <a href="containerweb.html" class="mt-4 inline-flex items-center gap-2 text-sm font-bold text-deep hover:gap-3 transition-all">詳細・ドキュメントを見る <i class="fa-solid fa-arrow-right"></i></a>
-        </div>
-      </div>
-      <div class="reveal card-h rounded-2xl border border-slate-200 overflow-hidden flex flex-col">
-        <div class="h-28 bg-gradient-to-br from-teal to-tealx flex items-center justify-center text-white text-3xl"><i class="fa-solid fa-magnifying-glass"></i></div>
-        <div class="p-6 flex flex-col flex-1">
-          <div class="font-bold text-lg mb-2">AI画像解析システム</div>
-          <div class="flex flex-wrap gap-1.5 mb-3">
-            <span class="text-[11px] px-2 py-0.5 rounded bg-gold/15 text-[#9a6a10]">コンピュータビジョン</span>
-            <span class="text-[11px] px-2 py-0.5 rounded bg-gold/15 text-[#9a6a10]">AI</span>
-          </div>
-          <p class="text-sm text-mute leading-relaxed flex-1">カメラ映像から受講者の集中度を解析する仕組みを実装。リアルタイム処理に対応。</p>
-          <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-mute"><b class="text-ink">技術</b>　YOLOv8 / MediaPipe / OpenCV / Python</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ CTA / NEXT STEP ============ -->
-<section id="contact" class="hero-grad text-white py-20 md:py-28">
+<!-- ============ CTA ============ -->
+<section id="contact" class="py-16 md:py-24 bg-navy text-white">
   <div class="max-w-5xl mx-auto px-5 text-center">
-    <p class="reveal text-gold font-bold tracking-widest text-sm mb-3">SUMMARY &amp; NEXT STEP</p>
-    <h2 class="reveal text-3xl md:text-5xl font-black mb-5">一緒に、つくりましょう。</h2>
-    <p class="reveal text-white/80 max-w-2xl mx-auto mb-12">幅広い案件に対応し、設計から実装・IaC・運用・ドキュメントまで一貫対応。コスト・セキュリティ・属人化といった課題を解消します。</p>
-    <div class="grid sm:grid-cols-3 gap-5 mb-12 text-left">
-      <div class="reveal rounded-2xl bg-navy2/80 border border-white/15 p-6">
-        <div class="text-gold font-bold text-sm mb-1">STEP 1</div>
-        <div class="font-bold text-lg mb-1">ご相談</div>
-        <p class="text-sm text-white/70">課題・ご要望のヒアリング（無料）</p>
-      </div>
-      <div class="reveal rounded-2xl bg-navy2/80 border border-white/15 p-6">
-        <div class="text-gold font-bold text-sm mb-1">STEP 2</div>
-        <div class="font-bold text-lg mb-1">PoC</div>
-        <p class="text-sm text-white/70">小規模で実証、効果と費用感を可視化</p>
-      </div>
-      <div class="reveal rounded-2xl bg-navy2/80 border border-white/15 p-6">
-        <div class="text-gold font-bold text-sm mb-1">STEP 3</div>
-        <div class="font-bold text-lg mb-1">本開発</div>
-        <p class="text-sm text-white/70">IaC・ドキュメント込みで堅実に納品</p>
-      </div>
+    <p class="reveal text-gold font-bold tracking-[0.2em] text-xs mb-3">NEXT STEP</p>
+    <h2 class="reveal text-3xl md:text-4xl font-black mb-5">一緒に、つくりましょう。</h2>
+    <p class="reveal text-white/75 max-w-2xl mx-auto mb-10">設計から実装・IaC・運用・ドキュメントまで一貫対応。まずは課題のヒアリングから承ります。</p>
+    <div class="grid sm:grid-cols-3 gap-5 mb-10 text-left">
+      <div class="reveal rounded-2xl bg-white/5 border border-white/15 p-6"><div class="text-gold font-bold text-sm mb-1">STEP 1</div><div class="font-bold text-lg mb-1">ご相談</div><p class="text-sm text-white/70">課題・ご要望のヒアリング（無料）</p></div>
+      <div class="reveal rounded-2xl bg-white/5 border border-white/15 p-6"><div class="text-gold font-bold text-sm mb-1">STEP 2</div><div class="font-bold text-lg mb-1">PoC</div><p class="text-sm text-white/70">小規模で実証、効果と費用感を可視化</p></div>
+      <div class="reveal rounded-2xl bg-white/5 border border-white/15 p-6"><div class="text-gold font-bold text-sm mb-1">STEP 3</div><div class="font-bold text-lg mb-1">本開発</div><p class="text-sm text-white/70">IaC・ドキュメント込みで堅実に納品</p></div>
     </div>
     <a href="#top" class="reveal inline-block px-8 py-3.5 rounded-full bg-gold text-navy font-bold hover:brightness-105 shadow-lg shadow-gold/20">受託開発・PoC のご相談を承ります</a>
     <p class="reveal text-white/55 text-sm mt-6">お問い合わせ：御社名（要編集）　｜　ご連絡先（要編集）</p>
@@ -376,11 +415,15 @@ tailwind.config = {
 </section>
 
 <!-- ============ FOOTER ============ -->
-<footer class="bg-navy text-white/60 py-10">
-  <div class="max-w-6xl mx-auto px-5 flex flex-col md:flex-row items-center justify-between gap-3 text-sm">
-    <div class="flex items-center gap-2 text-white/80 font-bold"><i class="fa-solid fa-layer-group text-teal"></i>受託開発ケイパビリティ</div>
-    <div>クラウド・生成AI・業務システム 受託開発　｜　御社名（要編集）　｜　2026</div>
+<footer class="bg-white border-t border-line py-8">
+  <div class="max-w-6xl mx-auto px-5 flex flex-col md:flex-row items-center justify-between gap-3 text-sm text-sub">
+    <div class="flex items-center gap-2 text-ink font-bold"><i class="fa-solid fa-layer-group text-teal"></i>BrightStar 受託開発ケイパビリティ</div>
+    <div class="flex items-center gap-4">
+      <a href="docs/BrightStar_受託開発ケーススタディ.pdf" class="hover:text-teal"><i class="fa-solid fa-file-pdf mr-1"></i>ケーススタディ資料</a>
+      <a href="index-v1.html" class="hover:text-teal">旧デザイン（v1）</a>
+    </div>
   </div>
+  <div class="max-w-6xl mx-auto px-5 mt-3 text-center md:text-left text-xs text-sub">クラウド・生成AI・業務システム 受託開発　｜　御社名（要編集）　｜　2026</div>
 </footer>
 
 <script>
@@ -388,16 +431,39 @@ tailwind.config = {
   const mb=document.getElementById('menuBtn'),mm=document.getElementById('mobileMenu');
   mb.addEventListener('click',()=>mm.classList.toggle('hidden'));
   mm.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>mm.classList.add('hidden')));
-  // nav background on scroll
-  const nav=document.getElementById('nav');
-  function onScroll(){
-    if(window.scrollY>30){nav.classList.add('bg-navy','shadow-lg');}
-    else{nav.classList.remove('bg-navy','shadow-lg');}
-  }
-  window.addEventListener('scroll',onScroll);onScroll();
+
   // reveal on scroll
-  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}})},{threshold:.12});
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}})},{threshold:.1});
   document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // case filter
+  const state={tech:'all',type:'all'};
+  const cards=[...document.querySelectorAll('#grid .case')];
+  const countEl=document.getElementById('count');
+  const emptyEl=document.getElementById('empty');
+  function apply(){
+    let n=0;
+    cards.forEach(c=>{
+      const techs=c.dataset.tech.split(' ');
+      const types=c.dataset.type.split(' ');
+      const ok=(state.tech==='all'||techs.includes(state.tech)) && (state.type==='all'||types.includes(state.type));
+      c.classList.toggle('hidden',!ok);
+      if(ok)n++;
+    });
+    countEl.textContent='（'+n+'件）';
+    emptyEl.classList.toggle('hidden',n>0);
+  }
+  document.querySelectorAll('[data-group]').forEach(group=>{
+    const g=group.dataset.group;
+    group.querySelectorAll('.filter-btn').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        state[g]=btn.dataset.val;
+        group.querySelectorAll('.filter-btn').forEach(b=>b.setAttribute('aria-pressed', b===btn?'true':'false'));
+        apply();
+      });
+    });
+  });
+  apply();
 </script>
 </body>
 </html>
