@@ -15,7 +15,7 @@ tailwind.config = {
   theme: { extend: {
     colors: {
       ink:'#10212E', sub:'#5A6B79', line:'#E5EBF0', mist:'#F5F8FB',
-      teal:'#0E9BB0', tealx:'#13B9D1', deep:'#0B5A82', navy:'#0E2238', gold:'#E0A43B'
+      teal:'#E8631A', tealx:'#F2884A', deep:'#3D4D5C', navy:'#0E2238', gold:'#E0A43B'
     },
     fontFamily:{ jp:['"Noto Sans JP"','sans-serif'] }
   }}
@@ -30,7 +30,11 @@ tailwind.config = {
   .case-card:hover{transform:translateY(-5px);box-shadow:0 16px 38px rgba(14,33,46,.12);border-color:#13B9D1}
   .chip{transition:all .2s ease}
   .filter-btn{transition:all .2s ease}
-  .filter-btn[aria-pressed="true"]{background:#0E9BB0;color:#fff;border-color:#0E9BB0}
+  .filter-btn[aria-pressed="true"]{background:#E8631A;color:#fff;border-color:#E8631A}
+  .tab{transition:all .2s ease;border:1px solid #E5EBF0;border-bottom:0}
+  .tab[aria-selected="true"]{background:#E8631A;color:#fff;border-color:#E8631A}
+  .tab[aria-selected="false"]{background:#F5F8FB;color:#5A6B79}
+  .tab[aria-selected="false"]:hover{background:#EEF3F8}
   ::selection{background:#0E9BB0;color:#fff}
 </style>
 </head>
@@ -86,30 +90,36 @@ tailwind.config = {
 <section id="cases" class="py-16 md:py-24 bg-white">
   <div class="max-w-6xl mx-auto px-5">
 
-    <!-- Filters -->
-    <div class="mb-9 space-y-5">
-      <div>
-        <div class="text-xs font-bold tracking-wider text-sub mb-2.5"><i class="fa-solid fa-filter text-teal mr-1.5"></i>技術領域から絞り込む</div>
-        <div class="flex flex-wrap gap-2" data-group="tech">
-          <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="all" aria-pressed="true">すべて</button>
-          <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="aws" aria-pressed="false">AWS</button>
-          <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="genai" aria-pressed="false">生成AI・RAG</button>
-          <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="container" aria-pressed="false">コンテナ</button>
-          <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="serverless" aria-pressed="false">サーバーレス</button>
-          <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="python" aria-pressed="false">Python</button>
-          <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="cv" aria-pressed="false">画像解析</button>
-        </div>
+    <!-- Filters (tab style) -->
+    <div class="mb-8">
+      <div class="flex gap-1.5 md:gap-2 border-b-2 border-teal" role="tablist">
+        <button class="tab flex-1 text-center rounded-t-lg px-3 py-3 text-sm md:text-base font-bold" data-tab="tech" aria-selected="true">
+          <i class="fa-solid fa-hashtag mr-1.5 opacity-80"></i>技術領域<span class="font-medium text-xs opacity-80"> から絞り込む</span>
+        </button>
+        <button class="tab flex-1 text-center rounded-t-lg px-3 py-3 text-sm md:text-base font-bold" data-tab="type" aria-selected="false">
+          <i class="fa-solid fa-briefcase mr-1.5 opacity-80"></i>案件タイプ<span class="font-medium text-xs opacity-80"> から絞り込む</span>
+        </button>
+        <button class="tab flex-1 text-center rounded-t-lg px-3 py-3 text-sm md:text-base font-bold" data-tab="jisseki" aria-selected="false">
+          <i class="fa-solid fa-award mr-1.5 opacity-80"></i>受託開発<span class="font-medium text-xs opacity-80"> の実績</span>
+        </button>
       </div>
-      <div>
-        <div class="text-xs font-bold tracking-wider text-sub mb-2.5"><i class="fa-solid fa-layer-group text-teal mr-1.5"></i>案件タイプから絞り込む</div>
-        <div class="flex flex-wrap gap-2" data-group="type">
-          <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="all" aria-pressed="true">すべて</button>
-          <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="saas" aria-pressed="false">SaaS</button>
-          <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="gyomu" aria-pressed="false">業務システム</button>
-          <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="api" aria-pressed="false">API基盤</button>
-          <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="ai" aria-pressed="false">AI活用</button>
-          <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="data" aria-pressed="false">移行・データ</button>
-        </div>
+
+      <div id="row-tech" class="tagrow flex flex-wrap gap-2 mt-5">
+        <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="all" aria-pressed="true">すべて</button>
+        <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="aws" aria-pressed="false">AWS</button>
+        <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="genai" aria-pressed="false">生成AI・RAG</button>
+        <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="container" aria-pressed="false">コンテナ</button>
+        <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="serverless" aria-pressed="false">サーバーレス</button>
+        <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="python" aria-pressed="false">Python</button>
+        <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="cv" aria-pressed="false">画像解析</button>
+      </div>
+      <div id="row-type" class="tagrow flex flex-wrap gap-2 mt-5 hidden">
+        <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="all" aria-pressed="true">すべて</button>
+        <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="saas" aria-pressed="false">SaaS</button>
+        <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="gyomu" aria-pressed="false">業務システム</button>
+        <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="api" aria-pressed="false">API基盤</button>
+        <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="ai" aria-pressed="false">AI活用</button>
+        <button class="filter-btn px-4 py-1.5 rounded-full border border-line text-sm font-medium text-ink bg-white" data-val="data" aria-pressed="false">移行・データ</button>
       </div>
     </div>
 
@@ -436,29 +446,41 @@ tailwind.config = {
   const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}})},{threshold:.1});
   document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
-  // case filter
-  const state={tech:'all',type:'all'};
+  // case filter (tab style)
+  const state={tab:'tech',tech:'all',type:'all'};
   const cards=[...document.querySelectorAll('#grid .case')];
   const countEl=document.getElementById('count');
   const emptyEl=document.getElementById('empty');
+  const rows={tech:document.getElementById('row-tech'),type:document.getElementById('row-type')};
   function apply(){
     let n=0;
     cards.forEach(c=>{
-      const techs=c.dataset.tech.split(' ');
-      const types=c.dataset.type.split(' ');
-      const ok=(state.tech==='all'||techs.includes(state.tech)) && (state.type==='all'||types.includes(state.type));
+      let ok;
+      if(state.tab==='jisseki'){ ok=c.dataset.kind==='jisseki'; }
+      else if(state.tab==='tech'){ ok=state.tech==='all'||c.dataset.tech.split(' ').includes(state.tech); }
+      else { ok=state.type==='all'||c.dataset.type.split(' ').includes(state.type); }
       c.classList.toggle('hidden',!ok);
       if(ok)n++;
     });
     countEl.textContent='（'+n+'件）';
     emptyEl.classList.toggle('hidden',n>0);
   }
-  document.querySelectorAll('[data-group]').forEach(group=>{
-    const g=group.dataset.group;
-    group.querySelectorAll('.filter-btn').forEach(btn=>{
+  // tabs
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.addEventListener('click',()=>{
+      state.tab=t.dataset.tab;
+      document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected', x===t?'true':'false'));
+      rows.tech.classList.toggle('hidden', state.tab!=='tech');
+      rows.type.classList.toggle('hidden', state.tab!=='type');
+      apply();
+    });
+  });
+  // tag pills within each row
+  Object.entries(rows).forEach(([dim,row])=>{
+    row.querySelectorAll('.filter-btn').forEach(btn=>{
       btn.addEventListener('click',()=>{
-        state[g]=btn.dataset.val;
-        group.querySelectorAll('.filter-btn').forEach(b=>b.setAttribute('aria-pressed', b===btn?'true':'false'));
+        state[dim]=btn.dataset.val;
+        row.querySelectorAll('.filter-btn').forEach(b=>b.setAttribute('aria-pressed', b===btn?'true':'false'));
         apply();
       });
     });
