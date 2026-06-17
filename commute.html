@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>要員通勤コスト比較ツール ｜ LINEで現場までの通勤費を一括比較・AWSサーバーレス</title>
+<meta name="description" content="LINEに現場の駅名を送ると、待機中の全要員について通勤時間・乗換回数・片道運賃・通勤定期代を一括比較。AWSサーバーレス(Lambda+DynamoDB)とLINE Botで構築。データソースは差し替え可能な抽象層で設計。" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: {
+  colors:{ navy:'#0E2238', navy2:'#16314e', deep:'#0B5A82', teal:'#1390A6', tealx:'#16b5cf', gold:'#E0A43B', red:'#d93025', ink:'#1B2733', mute:'#5E6B7A', mist:'#F4F7FB' },
+  fontFamily:{ jp:['"Noto Sans JP"','sans-serif'] }
+}}}
+</script>
+<style>
+  html{scroll-behavior:smooth} body{font-family:'Noto Sans JP',sans-serif}
+  .hero-grad{background:radial-gradient(1100px 600px at 80% -10%,rgba(19,144,166,.45),transparent),radial-gradient(900px 500px at 0% 110%,rgba(11,90,130,.5),transparent),linear-gradient(135deg,#0E2238 0%,#10324c 60%,#0b3a52 100%)}
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+  .reveal.in{opacity:1;transform:none}
+  .card-h{transition:transform .25s ease,box-shadow .25s ease}
+  .card-h:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(14,34,56,.16)}
+  ::selection{background:#1390A6;color:#fff}
+  .node{border-radius:14px;padding:14px 16px;font-weight:700;font-size:13px;text-align:center}
+  .chat{max-width:300px;border-radius:18px;padding:10px 14px;font-size:13px;line-height:1.6}
+</style>
+</head>
+<body class="text-ink bg-white antialiased">
+
+<!-- NAV -->
+<header id="nav" class="fixed top-0 inset-x-0 z-50 transition-all duration-300">
+  <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
+    <a href="index.html" class="flex items-center gap-2 font-bold text-white">
+      <span class="inline-flex w-9 h-9 rounded-xl bg-teal items-center justify-center text-white"><i class="fa-solid fa-train-subway"></i></span>
+      <span class="leading-tight">要員通勤コスト比較<span class="block text-[10px] font-medium tracking-widest opacity-70">LINE × AWSサーバーレス</span></span>
+    </a>
+    <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-white/85">
+      <a href="#value" class="hover:text-white">価値</a>
+      <a href="#arch" class="hover:text-white">構成</a>
+      <a href="#features" class="hover:text-white">機能</a>
+      <a href="#flow" class="hover:text-white">使い方</a>
+      <a href="#docs" class="hover:text-white">資料</a>
+      <a href="index.html" class="ml-1 px-4 py-2 rounded-full border border-white/30 text-white hover:bg-white/10"><i class="fa-solid fa-arrow-left mr-1"></i>実績TOP</a>
+    </nav>
+    <a href="index.html" class="md:hidden text-white text-sm"><i class="fa-solid fa-arrow-left mr-1"></i>TOP</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero-grad text-white pt-28 pb-20 md:pt-36 md:pb-28">
+  <div class="max-w-6xl mx-auto px-5">
+    <p class="text-gold font-bold tracking-widest text-sm mb-4">CASE STUDY ／ サーバーレス ・ 業務DX ・ LINE Bot</p>
+    <h1 class="text-3xl md:text-5xl font-black leading-tight mb-5">要員通勤コスト<br class="md:hidden">比較ツール</h1>
+    <p class="text-white/85 text-lg md:text-xl mb-7">提案時、各要員から客先現場までの<strong class="text-tealx">通勤時間・乗換回数・片道運賃・通勤定期代</strong>を、<b class="text-white">LINEに現場の駅名を送るだけ</b>で待機中の全要員ぶん一括比較。手作業の個別検索をなくします。</p>
+    <div class="flex flex-wrap gap-3 mb-9">
+      <a href="#docs" class="px-6 py-3 rounded-full bg-gold text-navy font-bold hover:brightness-105 shadow-lg shadow-gold/20"><i class="fa-solid fa-file-arrow-down mr-2"></i>資料をダウンロード</a>
+      <a href="#arch" class="px-6 py-3 rounded-full border border-white/30 text-white font-bold hover:bg-white/10">仕組みを見る</a>
+    </div>
+    <div class="flex flex-wrap gap-3">
+      <span class="px-4 py-2 rounded-full bg-white/10 border border-white/15 text-sm"><i class="fa-brands fa-line text-tealx mr-2"></i>LINEで一括比較</span>
+      <span class="px-4 py-2 rounded-full bg-white/10 border border-white/15 text-sm"><i class="fa-solid fa-cloud text-tealx mr-2"></i>AWSサーバーレス</span>
+      <span class="px-4 py-2 rounded-full bg-white/10 border border-white/15 text-sm"><i class="fa-solid fa-shield-halved text-tealx mr-2"></i>住所は保存せず最寄駅のみ</span>
+    </div>
+  </div>
+</section>
+
+<!-- 価値 -->
+<section id="value" class="py-16 md:py-20 bg-white">
+  <div class="max-w-6xl mx-auto px-5">
+    <div class="reveal mb-10"><p class="text-teal font-bold tracking-widest text-sm mb-2">OUR VALUE</p><h2 class="text-2xl md:text-3xl font-black">提供できる価値</h2>
+      <p class="text-mute mt-3 max-w-2xl">「どの要員を出すと通勤コストが最小か」を、提案のその場で根拠付きで比較できます。</p></div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div class="reveal card-h bg-mist rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-deep text-white flex items-center justify-center mb-4"><i class="fa-solid fa-layer-group"></i></div><div class="font-bold text-lg mb-1.5">一括比較</div><p class="text-sm text-mute leading-relaxed">現場駅を1つ送るだけで、待機中の全要員の通勤コストを表で比較。個別検索の手間を削減。</p></div>
+      <div class="reveal card-h bg-mist rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-teal text-white flex items-center justify-center mb-4"><i class="fa-solid fa-route"></i></div><div class="font-bold text-lg mb-1.5">明確な選定基準</div><p class="text-sm text-mute leading-relaxed">「定期代が最安」か「所要時間が最短」かを選択。先頭候補を盲目的に採らず根拠を提示。</p></div>
+      <div class="reveal card-h bg-mist rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-deep text-white flex items-center justify-center mb-4"><i class="fa-solid fa-right-left"></i></div><div class="font-bold text-lg mb-1.5">差し替え可能</div><p class="text-sm text-mute leading-relaxed">データ取得元を抽象化。暫定はWeb、正式版は認可API（駅すぱあと等）へ業務ロジックを変えず移行。</p></div>
+      <div class="reveal card-h bg-mist rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-teal text-white flex items-center justify-center mb-4"><i class="fa-solid fa-user-shield"></i></div><div class="font-bold text-lg mb-1.5">個人情報配慮</div><p class="text-sm text-mute leading-relaxed">社員情報は住所を保存せず「最寄駅」だけ保持。社内システムの花名册と同じ社員IDで連携。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- アーキテクチャ -->
+<section id="arch" class="py-16 md:py-24 bg-navy text-white">
+  <div class="max-w-6xl mx-auto px-5">
+    <div class="reveal mb-10"><p class="text-gold font-bold tracking-widest text-sm mb-2">ARCHITECTURE</p><h2 class="text-2xl md:text-4xl font-black">システム構成</h2>
+      <p class="text-white/70 mt-3">AWSサーバーレス。LINEからの入口と、API（IAM認証）の入口を持ち、結果はDynamoDBにキャッシュします。</p></div>
+    <div class="reveal bg-white/5 border border-white/10 rounded-2xl p-6 md:p-8">
+      <div class="grid md:grid-cols-3 gap-5 items-stretch">
+        <div class="space-y-3">
+          <div class="node bg-tealx/90 text-navy"><i class="fa-brands fa-line mr-1"></i> LINE（営業）</div>
+          <div class="text-center text-white/40"><i class="fa-solid fa-arrow-down"></i></div>
+          <div class="node bg-white/10 border border-white/15"><i class="fa-solid fa-bolt mr-1"></i> Function URL<br><span class="text-[11px] font-medium opacity-70">Webhook(署名検証) / API(IAM)</span></div>
+        </div>
+        <div class="space-y-3">
+          <div class="node bg-gold text-navy"><i class="fa-solid fa-gears mr-1"></i> Lambda（Python）<br><span class="text-[11px] font-medium opacity-80">一括比較・経路解析・非同期返信</span></div>
+          <div class="text-center text-white/40"><i class="fa-solid fa-arrows-split-up-and-left rotate-90"></i></div>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="node bg-white/10 border border-white/15 text-[12px]"><i class="fa-solid fa-table mr-1"></i> DynamoDB<br><span class="opacity-70">社員 / キャッシュ</span></div>
+            <div class="node bg-white/10 border border-white/15 text-[12px]"><i class="fa-solid fa-globe mr-1"></i> 経路データ<br><span class="opacity-70">Web→将来API</span></div>
+          </div>
+        </div>
+        <div class="space-y-3">
+          <div class="node bg-white/10 border border-white/15 text-[12px]"><i class="fa-solid fa-language mr-1"></i> Bedrock<br><span class="opacity-70">駅名の正規化（中国語等）</span></div>
+          <div class="node bg-white/10 border border-white/15 text-[12px]"><i class="fa-solid fa-location-dot mr-1"></i> Amazon Location<br><span class="opacity-70">住所→最寄駅</span></div>
+          <div class="node bg-white/10 border border-white/15 text-[12px]"><i class="fa-solid fa-cube mr-1"></i> CDK<br><span class="opacity-70">IaCで構築・デプロイ</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal mt-5 text-sm text-white/70 leading-relaxed bg-white/5 rounded-xl p-4 border border-white/10">
+      <span class="text-gold font-bold">設計のポイント：</span>同じ現場×同じ最寄駅は一度しか問い合わせず、結果は<b class="text-white">30日キャッシュ</b>。LINEは「即時ackの後、非同期で結果をpush」するため重い検索でもタイムアウトしません。データ取得元は抽象インタフェースの背後に隠し、<b class="text-white">業務ロジックを変えずに差し替え可能</b>です。
+    </div>
+  </div>
+</section>
+
+<!-- 機能 -->
+<section id="features" class="py-16 md:py-24 bg-mist">
+  <div class="max-w-6xl mx-auto px-5">
+    <div class="reveal mb-10"><p class="text-teal font-bold tracking-widest text-sm mb-2">FEATURES</p><h2 class="text-2xl md:text-4xl font-black">主な機能</h2>
+      <p class="text-mute mt-3">1経路あたり4指標を取得し、戦略で1案に絞って比較表にします。</p></div>
+    <div class="reveal overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+      <table class="w-full text-sm">
+        <thead><tr class="bg-navy text-white text-left"><th class="p-4 font-bold">機能</th><th class="p-4 font-bold">内容</th></tr></thead>
+        <tbody class="divide-y divide-slate-100">
+          <tr><td class="p-4 font-bold text-deep">4指標の取得</td><td class="p-4 text-mute">所要時間・乗換回数・片道運賃（IC／きっぷ）・通勤定期代（1・3・6ヶ月）</td></tr>
+          <tr class="bg-mist/50"><td class="p-4 font-bold text-deep">経路選択戦略</td><td class="p-4 text-mute">「定期代が最安（同額なら時間最短）」／「所要時間が最短」を選択</td></tr>
+          <tr><td class="p-4 font-bold text-deep">一括比較</td><td class="p-4 text-mute">現場を指定→待機中の全要員を比較。確定済み（現場アサイン中）は自動除外</td></tr>
+          <tr class="bg-mist/50"><td class="p-4 font-bold text-deep">入力ゆれの吸収</td><td class="p-4 text-mute">駅名は漢字・かな・カタカナ・ローマ字に対応。中国語表記はAIで日本語駅名へ正規化</td></tr>
+          <tr><td class="p-4 font-bold text-deep">住所→最寄駅</td><td class="p-4 text-mute">社員が住所しか分からなくても、ジオコーディングで最寄駅を自動判定（保存は駅名のみ）</td></tr>
+          <tr class="bg-mist/50"><td class="p-4 font-bold text-deep">花名册一括反映</td><td class="p-4 text-mute">CSV/txtを編集して流すだけで社員の増删改を反映（社内システムと同じ社員ID）</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="reveal text-xs text-mute mt-3">※ 経路候補は複数返るため、明示した戦略で1案を選定（先頭固定で採らない）。定期種別は「通勤」を採用。</p>
+  </div>
+</section>
+
+<!-- 使い方 / LINEフロー -->
+<section id="flow" class="py-16 md:py-24 bg-white">
+  <div class="max-w-5xl mx-auto px-5">
+    <div class="reveal mb-8"><p class="text-teal font-bold tracking-widest text-sm mb-2">HOW TO USE</p><h2 class="text-2xl md:text-4xl font-black">使い方（LINE）</h2>
+      <p class="text-mute mt-3">現場の駅名を送るだけ。数秒で待機中の全要員の比較が返ります。</p></div>
+    <div class="reveal bg-mist rounded-2xl p-6 md:p-8 border border-slate-100 space-y-4">
+      <div class="flex justify-end"><div class="chat bg-teal text-white">東京</div></div>
+      <div class="flex justify-start"><div class="chat bg-white border border-slate-200">収集中…ちょっと待ってね 🚃</div></div>
+      <div class="flex justify-start"><div class="chat bg-white border border-slate-200">■ 現場「東京」への通勤コスト（待機中3名 / 定期代が安い順）<br><br>・拉拉（池袋→東京）: 24分/乗換0回 IC253円 定期7,840円<br>　経由: 池袋→東京<br>・山田太郎（横浜→東京）: 27分/乗換0回 IC528円 定期15,600円<br>　経由: 横浜→東京<br>・鈴木一郎（立川→東京）: 64分/乗換1回 IC593円 定期19,580円<br>　経由: 立川→荻窪→東京</div></div>
+    </div>
+    <div class="reveal grid sm:grid-cols-3 gap-4 mt-6 text-sm">
+      <div class="bg-white rounded-xl p-5 border border-slate-100"><div class="font-bold text-deep mb-1">① 入口は3つ</div><p class="text-mute">LINE ／ コマンドライン ／ API（IAM署名）から同じ比較を実行。</p></div>
+      <div class="bg-white rounded-xl p-5 border border-slate-100"><div class="font-bold text-deep mb-1">② 名簿の維持</div><p class="text-mute">花名册CSVを編集→1コマンドで反映。住所行は最寄駅へ自動変換。</p></div>
+      <div class="bg-white rounded-xl p-5 border border-slate-100"><div class="font-bold text-deep mb-1">③ CSV出力</div><p class="text-mute">比較結果はCSVにも出力でき、提案資料へそのまま貼付可能。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 課題→解決 -->
+<section class="py-16 md:py-24 bg-mist">
+  <div class="max-w-5xl mx-auto px-5">
+    <div class="reveal mb-10"><p class="text-teal font-bold tracking-widest text-sm mb-2">PROBLEM → SOLUTION</p><h2 class="text-2xl md:text-4xl font-black">課題と解決アプローチ</h2></div>
+    <div class="space-y-4">
+      <div class="reveal card-h grid md:grid-cols-[1fr_auto_1.3fr] items-center gap-4 bg-white rounded-2xl p-5 border border-slate-100"><div class="font-bold flex items-center gap-3"><i class="fa-solid fa-triangle-exclamation text-gold"></i>要員ごとに通勤費を個別検索していた</div><i class="fa-solid fa-arrow-right text-teal hidden md:block"></i><div class="text-sm text-mute">現場駅を送るだけで全要員を一括比較。同一駅はキャッシュで再検索しない</div></div>
+      <div class="reveal card-h grid md:grid-cols-[1fr_auto_1.3fr] items-center gap-4 bg-white rounded-2xl p-5 border border-slate-100"><div class="font-bold flex items-center gap-3"><i class="fa-solid fa-triangle-exclamation text-gold"></i>どの経路・どの基準で選んだか曖昧</div><i class="fa-solid fa-arrow-right text-teal hidden md:block"></i><div class="text-sm text-mute">「定期最安／時間最短」を明示し、経由駅まで提示</div></div>
+      <div class="reveal card-h grid md:grid-cols-[1fr_auto_1.3fr] items-center gap-4 bg-white rounded-2xl p-5 border border-slate-100"><div class="font-bold flex items-center gap-3"><i class="fa-solid fa-triangle-exclamation text-gold"></i>暫定データ源にロックインしたくない</div><i class="fa-solid fa-arrow-right text-teal hidden md:block"></i><div class="text-sm text-mute">取得元を抽象化。正式版の認可APIへ業務ロジックを変えず差し替え</div></div>
+      <div class="reveal card-h grid md:grid-cols-[1fr_auto_1.3fr] items-center gap-4 bg-white rounded-2xl p-5 border border-slate-100"><div class="font-bold flex items-center gap-3"><i class="fa-solid fa-triangle-exclamation text-gold"></i>社員の住所は持ちたくない（情報管理）</div><i class="fa-solid fa-arrow-right text-teal hidden md:block"></i><div class="text-sm text-mute">登録時に最寄駅へ変換し、住所は保存しない</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 技術スタック -->
+<section class="py-16 md:py-24 bg-white">
+  <div class="max-w-6xl mx-auto px-5">
+    <div class="reveal mb-10"><p class="text-teal font-bold tracking-widest text-sm mb-2">TECH STACK</p><h2 class="text-2xl md:text-4xl font-black">技術構成</h2></div>
+    <div class="reveal overflow-x-auto rounded-2xl border border-slate-200 bg-mist">
+      <table class="w-full text-sm">
+        <thead><tr class="bg-navy text-white text-left"><th class="p-4 font-bold">レイヤ</th><th class="p-4 font-bold">採用技術</th><th class="p-4 font-bold">役割</th></tr></thead>
+        <tbody class="divide-y divide-slate-100 bg-white">
+          <tr><td class="p-4 font-bold text-deep">入口</td><td class="p-4">LINE Messaging API / Lambda Function URL</td><td class="p-4 text-mute">現場駅の受付（署名検証）・API（IAM認証）</td></tr>
+          <tr class="bg-mist/50"><td class="p-4 font-bold text-deep">アプリ</td><td class="p-4">AWS Lambda（Python 3.12）</td><td class="p-4 text-mute">一括比較・経路解析・即時ack＋非同期push</td></tr>
+          <tr><td class="p-4 font-bold text-deep">データ</td><td class="p-4">Amazon DynamoDB</td><td class="p-4 text-mute">社員テーブル・通勤キャッシュ（30日TTL）</td></tr>
+          <tr class="bg-mist/50"><td class="p-4 font-bold text-deep">経路取得</td><td class="p-4">抽象データソース（暫定Web／将来 認可API）</td><td class="p-4 text-mute">時間・乗換・運賃・定期代を取得（差し替え可能）</td></tr>
+          <tr><td class="p-4 font-bold text-deep">入力正規化</td><td class="p-4">Amazon Bedrock（Claude）</td><td class="p-4 text-mute">中国語等の駅名表記を日本語駅名へ正規化（兜底）</td></tr>
+          <tr class="bg-mist/50"><td class="p-4 font-bold text-deep">位置情報</td><td class="p-4">Amazon Location Service</td><td class="p-4 text-mute">住所のジオコーディング→最寄駅判定</td></tr>
+          <tr><td class="p-4 font-bold text-deep">IaC</td><td class="p-4">AWS CDK（TypeScript）</td><td class="p-4 text-mute">全リソースをコードで定義・デプロイ</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="reveal text-xs text-mute mt-3">※ 取得元は抽象インタフェース（query→共通の結果型）に統一。新データ源はインタフェース実装のみで追加でき、業務層・社員DBは無改修です。</p>
+  </div>
+</section>
+
+<!-- ドキュメント -->
+<section id="docs" class="py-16 md:py-24 bg-mist">
+  <div class="max-w-6xl mx-auto px-5">
+    <div class="reveal mb-10"><p class="text-teal font-bold tracking-widest text-sm mb-2">DOCUMENTS</p><h2 class="text-2xl md:text-4xl font-black">資料・ドキュメント</h2>
+      <p class="text-mute mt-3">利用・設計の各ドキュメント（PDF）です。</p></div>
+    <div class="grid sm:grid-cols-2 gap-5">
+      <a href="docs/通勤コスト_利用マニュアル.pdf" target="_blank" class="reveal card-h flex items-center gap-4 bg-white rounded-2xl p-5 border border-slate-100"><div class="w-12 h-12 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center text-xl"><i class="fa-solid fa-file-pdf"></i></div><div class="flex-1"><div class="font-bold">利用マニュアル（使用説明書）</div><div class="text-xs text-mute mt-0.5">PDF　LINE／コマンド／APIの使い方・名簿の維持・FAQ</div></div><i class="fa-solid fa-download text-mute"></i></a>
+      <a href="docs/通勤コスト_機能説明書.pdf" target="_blank" class="reveal card-h flex items-center gap-4 bg-white rounded-2xl p-5 border border-slate-100"><div class="w-12 h-12 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center text-xl"><i class="fa-solid fa-file-pdf"></i></div><div class="flex-1"><div class="font-bold">機能説明書</div><div class="text-xs text-mute mt-0.5">PDF　4指標・戦略・入力正規化・住所→駅・入出力仕様</div></div><i class="fa-solid fa-download text-mute"></i></a>
+      <a href="docs/通勤コスト_アーキテクチャ設計書.pdf" target="_blank" class="reveal card-h flex items-center gap-4 bg-white rounded-2xl p-5 border border-slate-100"><div class="w-12 h-12 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center text-xl"><i class="fa-solid fa-file-pdf"></i></div><div class="flex-1"><div class="font-bold">アーキテクチャ設計書</div><div class="text-xs text-mute mt-0.5">PDF　全体構成・データフロー・差し替え契約・技術選定</div></div><i class="fa-solid fa-download text-mute"></i></a>
+      <a href="docs/通勤コスト_システム要件書.pdf" target="_blank" class="reveal card-h flex items-center gap-4 bg-white rounded-2xl p-5 border border-slate-100"><div class="w-12 h-12 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center text-xl"><i class="fa-solid fa-file-pdf"></i></div><div class="flex-1"><div class="font-bold">システム要件書</div><div class="text-xs text-mute mt-0.5">PDF　機能/非機能・データ・セキュリティ・運用・前提</div></div><i class="fa-solid fa-download text-mute"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA / footer -->
+<section class="hero-grad text-white py-16 md:py-20 text-center">
+  <div class="max-w-3xl mx-auto px-5">
+    <h2 class="reveal text-2xl md:text-4xl font-black mb-4">現場アサインの「通勤コスト」を、その場で最適化。</h2>
+    <p class="reveal text-white/80 mb-8">LINE × AWSサーバーレス。御社の業務に合わせて最適な構成をご提案します。</p>
+    <a href="index.html#contact" class="reveal inline-block px-8 py-3.5 rounded-full bg-gold text-navy font-bold hover:brightness-105 shadow-lg shadow-gold/20">ご相談はこちら</a>
+    <div class="reveal mt-6"><a href="index.html" class="text-white/70 text-sm hover:text-white"><i class="fa-solid fa-arrow-left mr-1"></i>実績TOPに戻る</a></div>
+  </div>
+</section>
+<footer class="bg-navy text-white/60 py-8">
+  <div class="max-w-6xl mx-auto px-5 flex flex-col md:flex-row items-center justify-between gap-2 text-sm">
+    <div class="flex items-center gap-2 text-white/80 font-bold"><i class="fa-solid fa-train-subway text-teal"></i>要員通勤コスト比較ツール</div>
+    <div>受託開発ケーススタディ　｜　御社名（要編集）　｜　2026</div>
+  </div>
+</footer>
+
+<script>
+  const nav=document.getElementById('nav');
+  function onScroll(){ if(window.scrollY>30){nav.classList.add('bg-navy','shadow-lg');}else{nav.classList.remove('bg-navy','shadow-lg');} }
+  window.addEventListener('scroll',onScroll);onScroll();
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}})},{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
