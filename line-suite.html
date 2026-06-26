@@ -39,7 +39,7 @@ tailwind.config = { theme: { extend: {
     </a>
     <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-white/85">
       <a href="#value" class="hover:text-white">価値</a>
-      <a href="#channels" class="hover:text-white">4チャネル</a>
+      <a href="#channels" class="hover:text-white">5チャネル</a>
       <a href="#arch" class="hover:text-white">構成</a>
       <a href="#features" class="hover:text-white">共通機能</a>
       <a href="#docs" class="hover:text-white">資料</a>
@@ -57,10 +57,10 @@ tailwind.config = { theme: { extend: {
     <p class="text-white/85 text-lg md:text-xl mb-7">社内に分散していた <strong class="text-tealx">研修・人事・営業・社員</strong> の LINE アシスタントを、<b class="text-white">1 つのモノレポ／統一基盤</b>に統合。<b class="text-white">日次本人確認・多言語・名簿共有</b>などの共通機能を共有しつつ、役割ごとにチャネルを分離しました。</p>
     <div class="flex flex-wrap gap-3 mb-9">
       <a href="#docs" class="px-6 py-3 rounded-full bg-gold text-navy font-bold hover:brightness-105 shadow-lg shadow-gold/20"><i class="fa-solid fa-file-arrow-down mr-2"></i>利用マニュアルをダウンロード</a>
-      <a href="#channels" class="px-6 py-3 rounded-full border border-white/30 text-white font-bold hover:bg-white/10">4チャネルを見る</a>
+      <a href="#channels" class="px-6 py-3 rounded-full border border-white/30 text-white font-bold hover:bg-white/10">5チャネルを見る</a>
     </div>
     <div class="flex flex-wrap gap-3">
-      <span class="px-4 py-2 rounded-full bg-white/10 border border-white/15 text-sm"><i class="fa-solid fa-layer-group text-tealx mr-2"></i>4チャネル統合</span>
+      <span class="px-4 py-2 rounded-full bg-white/10 border border-white/15 text-sm"><i class="fa-solid fa-layer-group text-tealx mr-2"></i>5チャネル統合</span>
       <span class="px-4 py-2 rounded-full bg-white/10 border border-white/15 text-sm"><i class="fa-solid fa-id-badge text-tealx mr-2"></i>日次本人確認</span>
       <span class="px-4 py-2 rounded-full bg-white/10 border border-white/15 text-sm"><i class="fa-solid fa-language text-tealx mr-2"></i>日中 多言語</span>
       <span class="px-4 py-2 rounded-full bg-white/10 border border-white/15 text-sm"><i class="fa-solid fa-cloud text-tealx mr-2"></i>AWSサーバーレス＋CDK</span>
@@ -82,16 +82,17 @@ tailwind.config = { theme: { extend: {
   </div>
 </section>
 
-<!-- 4チャネル -->
+<!-- 5チャネル -->
 <section id="channels" class="py-16 md:py-24 bg-mist">
   <div class="max-w-6xl mx-auto px-5">
-    <div class="reveal mb-10"><p class="text-teal font-bold tracking-widest text-sm mb-2">CHANNELS</p><h2 class="text-2xl md:text-4xl font-black">4つのチャネル（役割で分離）</h2>
+    <div class="reveal mb-10"><p class="text-teal font-bold tracking-widest text-sm mb-2">CHANNELS</p><h2 class="text-2xl md:text-4xl font-black">5つのチャネル（役割で分離）</h2>
       <p class="text-mute mt-3">同一 LINE Provider 配下のため userId が一致。1チャネルの認証が全体で活きます。</p></div>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-5">
       <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-navy text-white flex items-center justify-center mb-4"><i class="fa-solid fa-chalkboard-user"></i></div><div class="font-bold text-lg mb-1">研修（講師）</div><p class="text-sm text-mute leading-relaxed">コース作成・公開(Zoom)・受講者一覧・ランダム分組。講師専用の管理操作。</p></div>
-      <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-deep text-white flex items-center justify-center mb-4"><i class="fa-solid fa-user-tie"></i></div><div class="font-bold text-lg mb-1">人事（HR）</div><p class="text-sm text-mute leading-relaxed">提出状況・未提出者の確認・催促・一括DL・社員名簿管理・メール校正リンク。</p></div>
+      <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-deep text-white flex items-center justify-center mb-4"><i class="fa-solid fa-user-tie"></i></div><div class="font-bold text-lg mb-1">人事（HR）</div><p class="text-sm text-mute leading-relaxed">社員名簿の管理（追加・変更・削除）とメール校正リンク。人事業務に専念。</p></div>
       <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-teal text-white flex items-center justify-center mb-4"><i class="fa-solid fa-train-subway"></i></div><div class="font-bold text-lg mb-1">営業</div><p class="text-sm text-mute leading-relaxed">現場への通勤コスト一括比較。要員名簿(CSV/単票)の保守、住所→最寄駅変換。</p></div>
       <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-navy2 text-white flex items-center justify-center mb-4"><i class="fa-solid fa-users"></i></div><div class="font-bold text-lg mb-1">社員（統合フロント）</div><p class="text-sm text-mute leading-relaxed">研修の受講・申込と、勤怠・通勤費の提出を1窓口に集約。毎日モードを選択。</p></div>
+      <div class="reveal card-h bg-white rounded-2xl p-6 border border-slate-100"><div class="w-11 h-11 rounded-xl bg-gold text-navy flex items-center justify-center mb-4"><i class="fa-solid fa-clipboard-check"></i></div><div class="font-bold text-lg mb-1">総務</div><p class="text-sm text-mute leading-relaxed">勤怠・通勤費の提出状況／未提出の確認、催促、当月分の一括DL。提出管理に専念。</p></div>
     </div>
   </div>
 </section>
@@ -104,12 +105,12 @@ tailwind.config = { theme: { extend: {
     <div class="reveal bg-white/5 border border-white/10 rounded-2xl p-6 md:p-8">
       <div class="grid md:grid-cols-3 gap-5 items-stretch">
         <div class="space-y-3">
-          <div class="node bg-tealx/90 text-navy"><i class="fa-brands fa-line mr-1"></i> LINE 4チャネル<br><span class="text-[11px] font-medium opacity-80">研修/人事/営業/社員</span></div>
+          <div class="node bg-tealx/90 text-navy"><i class="fa-brands fa-line mr-1"></i> LINE 5チャネル<br><span class="text-[11px] font-medium opacity-80">研修/人事/営業/社員/総務</span></div>
           <div class="text-center text-white/40"><i class="fa-solid fa-arrow-down"></i></div>
-          <div class="node bg-white/10 border border-white/15"><i class="fa-solid fa-bolt mr-1"></i> Function URL ×4<br><span class="text-[11px] font-medium opacity-70">Webhook 署名検証</span></div>
+          <div class="node bg-white/10 border border-white/15"><i class="fa-solid fa-bolt mr-1"></i> Function URL ×5<br><span class="text-[11px] font-medium opacity-70">Webhook 署名検証</span></div>
         </div>
         <div class="space-y-3">
-          <div class="node bg-gold text-navy"><i class="fa-solid fa-gears mr-1"></i> Lambda ×4<br><span class="text-[11px] font-medium opacity-80">Python / TypeScript</span></div>
+          <div class="node bg-gold text-navy"><i class="fa-solid fa-gears mr-1"></i> Lambda ×5<br><span class="text-[11px] font-medium opacity-80">Python / TypeScript</span></div>
           <div class="text-center text-white/40"><i class="fa-solid fa-arrows-split-up-and-left rotate-90"></i></div>
           <div class="grid grid-cols-2 gap-3">
             <div class="node bg-white/10 border border-white/15 text-[12px]"><i class="fa-solid fa-table mr-1"></i> 花名册<br><span class="opacity-70">roster 共有</span></div>
@@ -191,9 +192,10 @@ tailwind.config = { theme: { extend: {
       <p class="text-mute mt-3">チャネル別の利用マニュアル（PDF）です。システム概要・機能仕様・コードロジックは GitHub に Markdown で公開しています。</p></div>
     <div class="grid sm:grid-cols-2 gap-5">
       <a href="docs/LINE統合_研修講師_利用マニュアル.pdf" target="_blank" class="reveal card-h flex items-center gap-4 bg-white rounded-2xl p-5 border border-slate-100"><div class="w-12 h-12 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center text-xl"><i class="fa-solid fa-file-pdf"></i></div><div class="flex-1"><div class="font-bold">研修講師 利用マニュアル</div><div class="text-xs text-mute mt-0.5">PDF　コース作成・公開・分組・認証・FAQ</div></div><i class="fa-solid fa-download text-mute"></i></a>
-      <a href="docs/LINE統合_人事HR_利用マニュアル.pdf" target="_blank" class="reveal card-h flex items-center gap-4 bg-white rounded-2xl p-5 border border-slate-100"><div class="w-12 h-12 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center text-xl"><i class="fa-solid fa-file-pdf"></i></div><div class="flex-1"><div class="font-bold">人事HR 利用マニュアル</div><div class="text-xs text-mute mt-0.5">PDF　提出状況・催促・一括DL・名簿管理・メール校正</div></div><i class="fa-solid fa-download text-mute"></i></a>
+      <a href="docs/LINE統合_人事HR_利用マニュアル.pdf" target="_blank" class="reveal card-h flex items-center gap-4 bg-white rounded-2xl p-5 border border-slate-100"><div class="w-12 h-12 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center text-xl"><i class="fa-solid fa-file-pdf"></i></div><div class="flex-1"><div class="font-bold">人事HR 利用マニュアル</div><div class="text-xs text-mute mt-0.5">PDF　名簿管理・メール校正</div></div><i class="fa-solid fa-download text-mute"></i></a>
       <a href="docs/LINE統合_営業_利用マニュアル.pdf" target="_blank" class="reveal card-h flex items-center gap-4 bg-white rounded-2xl p-5 border border-slate-100"><div class="w-12 h-12 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center text-xl"><i class="fa-solid fa-file-pdf"></i></div><div class="flex-1"><div class="font-bold">営業 利用マニュアル</div><div class="text-xs text-mute mt-0.5">PDF　通勤比較・要員CSV/単票・住所→駅・経由の見方</div></div><i class="fa-solid fa-download text-mute"></i></a>
       <a href="docs/LINE統合_社員_利用マニュアル.pdf" target="_blank" class="reveal card-h flex items-center gap-4 bg-white rounded-2xl p-5 border border-slate-100"><div class="w-12 h-12 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center text-xl"><i class="fa-solid fa-file-pdf"></i></div><div class="flex-1"><div class="font-bold">社員 利用マニュアル</div><div class="text-xs text-mute mt-0.5">PDF　本人登録・研修/人事モード・提出・FAQ</div></div><i class="fa-solid fa-download text-mute"></i></a>
+      <a href="docs/LINE統合_総務_利用マニュアル.pdf" target="_blank" class="reveal card-h flex items-center gap-4 bg-white rounded-2xl p-5 border border-slate-100"><div class="w-12 h-12 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center text-xl"><i class="fa-solid fa-file-pdf"></i></div><div class="flex-1"><div class="font-bold">総務 利用マニュアル</div><div class="text-xs text-mute mt-0.5">PDF　勤怠・通勤費の提出状況・未提出・催促・一括DL</div></div><i class="fa-solid fa-download text-mute"></i></a>
       <a href="https://github.com/scgpp12/BrightStar_Line_Sytem/tree/main/docs" target="_blank" class="reveal card-h flex items-center gap-4 bg-white rounded-2xl p-5 border border-slate-100 sm:col-span-2"><div class="w-12 h-12 rounded-xl bg-navy/10 text-navy flex items-center justify-center text-xl"><i class="fa-brands fa-github"></i></div><div class="flex-1"><div class="font-bold">システム概要書・機能仕様書・コードロジック説明書</div><div class="text-xs text-mute mt-0.5">GitHub（Markdown）　アーキテクチャ・処理フロー・データモデル</div></div><i class="fa-solid fa-arrow-up-right-from-square text-mute"></i></a>
     </div>
   </div>
